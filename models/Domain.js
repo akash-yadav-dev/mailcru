@@ -6,7 +6,7 @@ const domainSchema = new mongoose.Schema(
 	{
 		domain: { type: String, required: true, unique: true, lowercase: true, trim: true },
 		mailFromDomain: { type: String, required: true, lowercase: true, trim: true },
-		// Archive, tracked links and unsubscribe links live here once it points at MailCheap.
+		// Archive, tracked links and unsubscribe links live here once it points at MailCru.
 		archiveHost: { type: String, required: true, unique: true, lowercase: true, trim: true },
 		// The email provider it was added at (lib/email-provider), and its id there. Domains from before the
 		// provider switch are SES's.

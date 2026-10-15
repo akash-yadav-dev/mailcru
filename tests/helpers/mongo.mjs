@@ -57,7 +57,7 @@ function stopProcess(child) {
 // The driver backs off between failed connections, so it only connects once the port is open.
 export async function startMongo() {
 	const port = await getFreePort();
-	const dbpath = await mkdtemp(join(tmpdir(), "mailcheap-test-"));
+	const dbpath = await mkdtemp(join(tmpdir(), "mailcru-test-"));
 	const binary = process.env.MONGOD_PATH || "mongod";
 	const child = spawn(binary, ["--dbpath", dbpath, "--port", String(port), "--bind_ip", "127.0.0.1", "--replSet", "rs0", "--quiet"], {
 		stdio: "ignore",
@@ -95,5 +95,5 @@ export async function startMongo() {
 		await client?.close();
 	}
 
-	return { uri: `mongodb://127.0.0.1:${port}/mailcheap-test?directConnection=true`, stop };
+	return { uri: `mongodb://127.0.0.1:${port}/mailcru-test?directConnection=true`, stop };
 }

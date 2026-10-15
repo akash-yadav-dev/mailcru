@@ -1,6 +1,6 @@
 import { getAppUrl } from "@/lib/config";
 
-// The dashboard, the admin, the APIs and tracked links. / stays open: on MailCheap Cloud, signed-out visitors get
+// The dashboard, the admin, the APIs and tracked links. / stays open: on MailCru Cloud, signed-out visitors get
 // the landing page there. Archive hosts get their own robots.txt (proxy.js).
 const PRIVATE_PATHS = [
 	"/account",

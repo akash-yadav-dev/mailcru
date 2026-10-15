@@ -1,5 +1,5 @@
 {
-  "name": "mailcheap",
+  "name": "mailcru",
   "version": "1.0.0",
   "private": true,
   "license": "AGPL-3.0-only",
@@ -12,7 +12,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "node --import ./tests/setup/register.mjs --test \"tests/**/*.test.mjs\""
+    "test": "node --import ./tests/setup/register.mjs --test \"tests/**/*.test.mjs\"",
+    "rebrand": "node scripts/rebrand.mjs",
+    "rebrand:check": "node scripts/rebrand.mjs --check"
   },
   "dependencies": {
     "@aws-sdk/client-cloudfront": "^3.1146.0",

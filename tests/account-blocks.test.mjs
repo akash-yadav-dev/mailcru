@@ -53,7 +53,7 @@ async function customer(email, { contacts = 2, isFree = false } = {}) {
 				form({
 					name: `${slug} news`,
 					slug,
-					fromEmail: `hello@${slug}.mailcheapmail.com`,
+					fromEmail: `hello@${slug}.mailcrumail.com`,
 					postalAddress: "1 Main St, Paris",
 					archiveEnabled: "on",
 					welcomeEnabled: "on",
@@ -104,7 +104,7 @@ function event(user, message, fields) {
 }
 
 function alertsSince(index) {
-	return platformEmails.slice(index).filter(({ subject }) => subject === "[MailCheap] Account blocked");
+	return platformEmails.slice(index).filter(({ subject }) => subject === "[MailCru] Account blocked");
 }
 
 function assertError(response, status, code) {
@@ -181,7 +181,7 @@ describe("what blocks an account", () => {
 		assert.match(toAdmins.text, /blocked by a spam trap/);
 		assert.ok(toAdmins.text.includes(`${hard.email} bounced: Hard bounce: 550 5.1.1 This address is a spam trap`));
 		assert.ok(!toOwner.text.includes(hard.email), "the trap's address stays with the admins");
-		assert.match(toOwner.text, /welcome emails included.*Contact hello@mailcheap.ai to unblock it/s);
+		assert.match(toOwner.text, /welcome emails included.*Contact hello@mailcru.com to unblock it/s);
 	});
 
 	test("over 7 days: 1 complaint does nothing, 2 warn the owner, 3 over 0.3% block, each counted at once", async () => {
@@ -191,12 +191,12 @@ describe("what blocks an account", () => {
 
 		let emailsBefore = platformEmails.length;
 		await event(user, messages[0], { type: "complaint" });
-		assert.deepEqual(subjectsSince(emailsBefore), ["complaints@example.com [MailCheap] Spam complaint"], "only the usual notice");
+		assert.deepEqual(subjectsSince(emailsBefore), ["complaints@example.com [MailCru] Spam complaint"], "only the usual notice");
 
 		emailsBefore = platformEmails.length;
 		await event(user, messages[1], { type: "complaint" });
 		assert.equal((await loadAccount(user)).status, "active", "2 complaints never block");
-		assert.deepEqual(subjectsSince(emailsBefore), ["complaints@example.com [MailCheap] Bounces or complaints are high"]);
+		assert.deepEqual(subjectsSince(emailsBefore), ["complaints@example.com [MailCru] Bounces or complaints are high"]);
 
 		emailsBefore = platformEmails.length;
 		await event(user, messages[2], { type: "complaint" });
@@ -222,7 +222,7 @@ describe("what blocks an account", () => {
 		assert.match(paused.pauseReason, /^Bounce rate of 5.00% on this campaign \(limit 2.00%\)\. Check where these contacts came from before you resume/);
 		assert.equal((await loadCampaign(user, other)).status, "sent");
 		const emails = platformEmails.slice(emailsBefore);
-		assert.deepEqual(emails.map(({ to, subject }) => [to, subject]), [[["campaign-warning@example.com"], "[MailCheap] Campaign paused"]], "no admin email");
+		assert.deepEqual(emails.map(({ to, subject }) => [to, subject]), [[["campaign-warning@example.com"], "[MailCru] Campaign paused"]], "no admin email");
 
 		assert.deepEqual(await as(user, () => m.campaigns.resumeCampaign(warned)), { ok: true });
 		assert.equal(sentCount(await runJobs(user)), 3, "the same rates don't pause it again");
@@ -278,7 +278,7 @@ describe("a blocked account", () => {
 		assert.equal((await loadCampaign(user, later)).status, "draft", "a scheduled send goes back to draft");
 
 		const test = await as(user, () => m.campaigns.sendTestCampaign(sending));
-		assert.deepEqual(test, { error: "This account is blocked: Review. Contact hello@mailcheap.ai to unblock it.", code: "account_blocked" });
+		assert.deepEqual(test, { error: "This account is blocked: Review. Contact hello@mailcru.com to unblock it.", code: "account_blocked" });
 		assert.equal((await as(user, () => m.newsletters.sendWelcomeTest(user.newsletterId))).code, "account_blocked");
 
 		const newsletter = await m.Newsletter.findOne({ accountId: user.accountId, _id: user.newsletterId }).lean();
@@ -301,7 +301,7 @@ describe("a blocked account", () => {
 		await as(user, () => m.campaigns.scheduleCampaign(scheduled, { scheduledAt: new Date(Date.now() + 86_400_000).toISOString() }));
 		await m.blocks.blockAccount(user.accountId, { reason: "Review" });
 
-		const refused = { error: "This account is blocked: Review. Contact hello@mailcheap.ai to unblock it.", code: "account_blocked" };
+		const refused = { error: "This account is blocked: Review. Contact hello@mailcru.com to unblock it.", code: "account_blocked" };
 		const rows = [{ email: "new@example.org", status: "active" }];
 		assert.deepEqual(await as(user, () => m.contacts.importContacts({ newsletterId: user.newsletterId, consent: true, rows })), refused);
 		assert.deepEqual(await as(user, () => m.campaigns.sendCampaign(id, {})), refused);

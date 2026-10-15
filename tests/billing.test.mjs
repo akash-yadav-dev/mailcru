@@ -17,13 +17,13 @@ function price(lookupKey, unitAmount, interval) {
 }
 
 const PRICES = {
-	mailcheap_starter_monthly: price("mailcheap_starter_monthly", 1900, "month"),
-	mailcheap_growth_monthly: price("mailcheap_growth_monthly", 3900, "month"),
-	mailcheap_growth_yearly: price("mailcheap_growth_yearly", 39_000, "year"),
-	mailcheap_pro_monthly: price("mailcheap_pro_monthly", 9900, "month"),
+	mailcru_starter_monthly: price("mailcru_starter_monthly", 1900, "month"),
+	mailcru_growth_monthly: price("mailcru_growth_monthly", 3900, "month"),
+	mailcru_growth_yearly: price("mailcru_growth_yearly", 39_000, "year"),
+	mailcru_pro_monthly: price("mailcru_pro_monthly", 9900, "month"),
 };
 
-function subscription({ id, accountId, customer, status = "active", lookupKey = "mailcheap_starter_monthly", start = NOW, end = NOW + 30 * DAY, ...rest }) {
+function subscription({ id, accountId, customer, status = "active", lookupKey = "mailcru_starter_monthly", start = NOW, end = NOW + 30 * DAY, ...rest }) {
 	return {
 		id,
 		object: "subscription",
@@ -144,7 +144,7 @@ describe("checkout", () => {
 
 		const created = calls.find(({ path }) => path === "/v1/checkout/sessions").body;
 		assert.equal(created.get("mode"), "subscription");
-		assert.equal(created.get("line_items[0][price]"), "price_mailcheap_growth_yearly");
+		assert.equal(created.get("line_items[0][price]"), "price_mailcru_growth_yearly");
 		assert.equal(created.get("client_reference_id"), String(user.accountId));
 		assert.equal(created.get("subscription_data[metadata][accountId]"), String(user.accountId));
 		assert.equal(created.get("customer_email"), "checkout@example.com");
@@ -175,7 +175,7 @@ describe("checkout", () => {
 
 	test("a Stripe price that doesn't match the plan file never reaches Checkout", async () => {
 		const user = await signIn("mismatch@example.com");
-		const real = PRICES.mailcheap_pro_monthly;
+		const real = PRICES.mailcru_pro_monthly;
 		const url = await as(user, () => catchRedirect(m.billing.choosePlan(form({ plan: "pro", interval: "month" }))));
 		assert.equal(real.unit_amount, 9900, "Stripe says $99, the plan says $79");
 		assert.equal(url, "/billing?interval=month&error=stripe");
@@ -184,7 +184,7 @@ describe("checkout", () => {
 
 	test("checkout.session.completed turns the plan on and starts the month", async () => {
 		const user = await signIn("paid@example.com");
-		subscriptions.set("sub_paid", subscription({ id: "sub_paid", accountId: user.accountId, customer: "cus_paid", lookupKey: "mailcheap_growth_monthly" }));
+		subscriptions.set("sub_paid", subscription({ id: "sub_paid", accountId: user.accountId, customer: "cus_paid", lookupKey: "mailcru_growth_monthly" }));
 		const result = await deliver("checkout.session.completed", {
 			id: "cs_paid",
 			object: "checkout.session",
@@ -239,7 +239,7 @@ describe("subscription changes", () => {
 	});
 
 	test("an upgrade changes the plan; a scheduled cancel is shown, and undone", async () => {
-		subscriptions.set("sub_life", subscription({ id: "sub_life", accountId: user.accountId, customer: "cus_life", lookupKey: "mailcheap_growth_yearly", end: NOW + 365 * DAY }));
+		subscriptions.set("sub_life", subscription({ id: "sub_life", accountId: user.accountId, customer: "cus_life", lookupKey: "mailcru_growth_yearly", end: NOW + 365 * DAY }));
 		await deliver("customer.subscription.updated", { id: "sub_life" });
 		let current = await account(user);
 		assert.equal(current.plan, "growth");
@@ -256,7 +256,7 @@ describe("subscription changes", () => {
 	});
 
 	test("the event's own copy is never trusted: the subscription is read from Stripe", async () => {
-		subscriptions.set("sub_life", subscription({ id: "sub_life", accountId: user.accountId, customer: "cus_life", lookupKey: "mailcheap_growth_yearly", end: NOW + 365 * DAY }));
+		subscriptions.set("sub_life", subscription({ id: "sub_life", accountId: user.accountId, customer: "cus_life", lookupKey: "mailcru_growth_yearly", end: NOW + 365 * DAY }));
 		const result = await deliver("customer.subscription.updated", { id: "sub_life", status: "canceled", items: { data: [] } });
 		assert.deepEqual(result, { status: 200, body: { received: true, updated: true, status: "active" } });
 		assert.equal((await account(user)).subscriptionStatus, "active");
@@ -296,7 +296,7 @@ describe("subscription changes", () => {
 
 	test("deletion ends access: what needs a plan opens the paywall on the dashboard, and the API answers 402", async () => {
 		const { key } = await createKey(user, "Site");
-		subscriptions.set("sub_life", subscription({ id: "sub_life", accountId: user.accountId, customer: "cus_life", status: "canceled", lookupKey: "mailcheap_growth_yearly" }));
+		subscriptions.set("sub_life", subscription({ id: "sub_life", accountId: user.accountId, customer: "cus_life", status: "canceled", lookupKey: "mailcru_growth_yearly" }));
 		await deliver("customer.subscription.deleted", { id: "sub_life" });
 
 		const ended = await account(user);
@@ -354,7 +354,7 @@ describe("customer portal", () => {
 		const change = calls.findLast(({ path }) => path === "/v1/billing_portal/sessions").body;
 		assert.equal(change.get("flow_data[type]"), "subscription_update_confirm");
 		assert.equal(change.get("flow_data[subscription_update_confirm][subscription]"), "sub_portal");
-		assert.equal(change.get("flow_data[subscription_update_confirm][items][0][price]"), "price_mailcheap_growth_monthly");
+		assert.equal(change.get("flow_data[subscription_update_confirm][items][0][price]"), "price_mailcru_growth_monthly");
 		assert.equal(calls.some(({ path }) => path === "/v1/checkout/sessions"), false, "a paying account never gets a second subscription");
 	});
 

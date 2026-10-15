@@ -35,12 +35,12 @@ export function mockStripe(handler) {
 	stripeHandler = handler;
 }
 
-// MailCheap Cloud by default; a self-hosted server with { MAILCHEAP_CLOUD: "" }.
+// MailCru Cloud by default; a self-hosted server with { MAILCRU_CLOUD: "" }.
 export async function startTestApp(env = {}) {
 	const mongo = await startMongo();
 	Object.assign(process.env, {
 		NODE_ENV: "test",
-		MAILCHEAP_CLOUD: "true",
+		MAILCRU_CLOUD: "true",
 		MONGODB_URI: mongo.uri,
 		BETTER_AUTH_SECRET: "test-secret-for-integration-tests-0123456789",
 		APP_URL: "http://localhost:3000",
@@ -48,12 +48,12 @@ export async function startTestApp(env = {}) {
 		SENDING_ENABLED: "true",
 		QSTASH_TOKEN: "qstash-test",
 		SEND_RATE_PER_SECOND: "14",
-		STRIPE_SECRET_KEY: "sk_test_mailcheap",
-		STRIPE_WEBHOOK_SECRET: "whsec_test_mailcheap",
+		STRIPE_SECRET_KEY: "sk_test_mailcru",
+		STRIPE_WEBHOOK_SECRET: "whsec_test_mailcru",
 		ADMIN_EMAILS: "admin@example.com",
 		BLOB_READ_WRITE_TOKEN: "blob-test",
-		SHARED_DOMAIN: "mailcheapmail.com",
-		ARCHIVE_CNAME_TARGET: "cname.mailcheap.ai",
+		SHARED_DOMAIN: "mailcrumail.com",
+		ARCHIVE_CNAME_TARGET: "cname.mailcru.com",
 		SES_AWS_ACCOUNT_ID: "111122223333",
 		SES_ACCESS_KEY_ID: "test-ses-key-id",
 		SES_SECRET_ACCESS_KEY: "test-ses-secret",
@@ -178,7 +178,7 @@ export async function addVerifiedDomain(user, domain, { archiveHost = `news.${do
 	const account = await Account.findById(user.accountId).lean();
 	const added = await addDomain({ account, domain, archiveHost });
 	verifyIdentity(domain);
-	if (isArchiveLive) cnames.set(archiveHost, ["cname.mailcheap.ai"]);
+	if (isArchiveLive) cnames.set(archiveHost, ["cname.mailcru.com"]);
 	user.account = await Account.findById(user.accountId).lean();
 	return checkDomain({ account: user.account, domainId: added._id });
 }

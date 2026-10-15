@@ -6,7 +6,7 @@ import { SUPPORT_EMAIL, isCloud } from "@/lib/config";
 // BannerPlan: why, and who unblocks it.
 export default function BannerBlocked({ account }) {
 	const reason = account.pauseReason?.trim().replace(/\.$/, "");
-	const subject = encodeURIComponent("My MailCheap account is blocked");
+	const subject = encodeURIComponent("My MailCru account is blocked");
 
 	return (
 		<div
