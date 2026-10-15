@@ -33,7 +33,7 @@ async function setup(email, { emails, subscribers, contacts, welcome = false }) 
 				form({
 					name: `${slug} news`,
 					slug,
-					fromEmail: `hello@${slug}.mailcheapmail.com`,
+					fromEmail: `hello@${slug}.mailcrumail.com`,
 					postalAddress: "1 Main St, Paris",
 					archiveEnabled: "on",
 					...(welcome && { welcomeEnabled: "on", welcomeSubject: "Welcome", welcomeMarkdown: "Thanks for joining." }),

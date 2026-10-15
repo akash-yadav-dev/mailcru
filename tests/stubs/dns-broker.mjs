@@ -1,4 +1,4 @@
-// The DNS helper in memory: records MailCheap asked for, by slug, as the helper keeps them on mailcheap.ai.
+// The DNS helper in memory: records MailCru asked for, by slug, as the helper keeps them on mailcru.com.
 export const dnsRecords = new Map();
 let nextId = 0;
 

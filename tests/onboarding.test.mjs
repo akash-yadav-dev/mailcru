@@ -65,7 +65,7 @@ describe("/welcome", () => {
 		const newsletter = await m.Newsletter.findOne({ accountId: user.accountId }).lean();
 		assert.deepEqual(
 			[newsletter.name, newsletter.slug, newsletter.description, newsletter.fromName, newsletter.fromEmail],
-			["Field notes", "field-notes", "One idea a week.", "Jane", "hello@field-notes.mailcheapmail.com"]
+			["Field notes", "field-notes", "One idea a week.", "Jane", "hello@field-notes.mailcrumail.com"]
 		);
 		assert.deepEqual(getCleanupSettings(newsletter), { enabled: true, issues: 6, days: 180 }, "list cleanup starts on");
 		const account = await loadAccount(user);

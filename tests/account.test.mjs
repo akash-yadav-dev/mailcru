@@ -108,7 +108,7 @@ describe("the account menu", () => {
 		assert.deepEqual(m.state.getSendingStatus(paid), { label: "Sending on", hint: null, tone: "green" });
 		assert.deepEqual(m.state.getSendingStatus({ ...paid, status: "paused", pauseReason: "Review" }), {
 			label: "Account blocked",
-			hint: "This account is blocked: Review. Contact hello@mailcheap.ai to unblock it.",
+			hint: "This account is blocked: Review. Contact hello@mailcru.com to unblock it.",
 			tone: "red",
 		});
 		assert.equal(await withEnv({ SENDING_ENABLED: "false" }, () => m.state.getSendingStatus(paid).label), "Sending off");
@@ -127,7 +127,7 @@ describe("the account menu", () => {
 			assert.equal(m.signOut.askToSignOut(), false);
 			answer = true;
 			assert.equal(m.signOut.askToSignOut(), true);
-			assert.deepEqual(asked, ["Sign out of MailCheap?", "Sign out of MailCheap?"]);
+			assert.deepEqual(asked, ["Sign out of MailCru?", "Sign out of MailCru?"]);
 		} finally {
 			delete globalThis.window;
 		}

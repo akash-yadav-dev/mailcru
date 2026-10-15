@@ -8,15 +8,19 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 <!-- END:nextjs-agent-rules -->
 
-# MailCheap
+# MailCru
 
-Read this before working on MailCheap. If `AGENTS.cloud.md` is next to it (MailCheap Cloud's own repository), read that too.
+Read this before working on MailCru. If `AGENTS.cloud.md` is next to it (MailCru Cloud's own repository), read that too.
 
 ## What it is
 
-MailCheap is a newsletter app: write an issue, send it to your list, publish it on the web. Everything the dashboard does also works from an AI agent, through a REST API and an MCP server.
+MailCru is a newsletter app: write an issue, send it to your list, publish it on the web. Everything the dashboard does also works from an AI agent, through a REST API and an MCP server.
 
-It's open source under the AGPL-3.0 (`LICENSE`): anyone can run it on their own server with their own Amazon SES or PostShiba account, change it and share it. The README is the self-hosting guide. MailCheap Cloud ([mailcheap.ai](https://mailcheap.ai)) runs this same code for people who'd rather not host it.
+It's open source under the AGPL-3.0 (`LICENSE`): anyone can run it on their own server with their own Amazon SES or PostShiba account, change it and share it. The README is the self-hosting guide. MailCru Cloud ([mailcru.com](https://mailcru.com)) runs this same code for people who'd rather not host it.
+
+## A fork of MailCheap
+
+MailCru is a rebranded fork of [MailCheap](https://github.com/marclou/mailcheap) (remote `upstream`). Merging upstream and re-running `npm run rebrand` keeps it current: read `UPSTREAM.md` first. Never edit `LICENSE` or remove the credit in `README.md` and `NOTICE.md`, and note every change that upstream doesn't have in `NOTICE.md`.
 
 ## How it's organized
 
@@ -28,19 +32,19 @@ Next.js App Router in JavaScript, Tailwind CSS with shadcn/ui, MongoDB through M
 - **Accounts**: `scoped(account, filter)` (`lib/account-scope.js`) adds the account to every query, and a Mongoose plugin refuses customer queries without one. `requireAccount()` for pages and server actions, `authenticateRequest()` for the API and MCP (`lib/auth.js`, `lib/api-keys.js`).
 - **MCP and OAuth**: API keys, or OAuth access tokens from Better Auth's OAuth provider (`lib/auth.js`, `lib/oauth.js`, `lib/oauth-rules.js`), with the consent page at `app/oauth/consent`.
 - **Jobs**: QStash calls `app/api/jobs/*`: sending batches, scheduled sends, first-send checks and the purge of deleted accounts.
-- **Email providers**: `lib/email-provider` switches between `ses.js` and `postshiba.js` (tenants, domains, sends), and their events become one shape (`lib/email-event-rules.js`). MailCheap's own emails (sign-in codes, alerts) go through `lib/platform-email.js`: Resend, or the provider.
+- **Email providers**: `lib/email-provider` switches between `ses.js` and `postshiba.js` (tenants, domains, sends), and their events become one shape (`lib/email-event-rules.js`). MailCru's own emails (sign-in codes, alerts) go through `lib/platform-email.js`: Resend, or the provider.
 - **Storage**: models in `models/`, images in S3 behind CloudFront or in Vercel Blob (`lib/image-storage.js`), rate limits in Upstash Redis or memory (`lib/rate-limit.js`).
 
-## MailCheap Cloud and self-hosting
+## MailCru Cloud and self-hosting
 
-`isCloud()` in `lib/config.js` is `MAILCHEAP_CLOUD === "true"`, what mailcheap.ai runs with: open sign-up, plans and Stripe billing. Anything else is a self-hosted server: only the allowlist (`ADMIN_EMAILS`, `ALLOWED_EMAILS`) signs in, there's no billing and no limits. Both run from the same files, so a change has to work in both modes.
+`isCloud()` in `lib/config.js` is `MAILCRU_CLOUD === "true"`, what mailcru.com runs with: open sign-up, plans and Stripe billing. Anything else is a self-hosted server: only the allowlist (`ADMIN_EMAILS`, `ALLOWED_EMAILS`) signs in, there's no billing and no limits. Both run from the same files, so a change has to work in both modes.
 
-MailCheap Cloud's marketing site and analytics aren't part of the open source. Shared code reaches them only through the site extensions, `lib/site-extensions.js` and `components/SiteExtensions.jsx`, whose defaults add nothing: never import cloud-only code anywhere else.
+MailCru Cloud's marketing site and analytics aren't part of the open source. Shared code reaches them only through the site extensions, `lib/site-extensions.js` and `components/SiteExtensions.jsx`, whose defaults add nothing: never import cloud-only code anywhere else.
 
 ## Rules
 
 - The code is public: never commit secrets, keys, tokens or personal data (emails, phone numbers, addresses, customers' data), in code, tests, fixtures or commit messages. Tests use `example.com` and made-up values.
-- Write "MailCheap" in display text: copy, titles, emails, docs, comments. Lowercase in identifiers and machine names: `mailcheap.ai`, `MAILCHEAP_CLOUD`, `LogoMailcheap`, package and file names.
+- Write "MailCru" in display text: copy, titles, emails, docs, comments. Lowercase in identifiers and machine names: `mailcru.com`, `MAILCRU_CLOUD`, `LogoMailcru`, package and file names.
 - Copy is plain and short, in sentence case: only the first word of a title or a button is capitalized.
 
 ## Code style

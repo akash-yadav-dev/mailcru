@@ -5,14 +5,14 @@ import { getFeedbackId } from "../lib/sending-rules.js";
 import { getShareLinks, getSocialPlatform, parseSocialLinks } from "../lib/social.js";
 
 test("app-domain archive paths move to the newsletter's shared subdomain", () => {
-	const shared = "mailcheapmail.com";
+	const shared = "mailcrumail.com";
 	const cases = [
-		["/archive/weekly", "", "https://weekly.mailcheapmail.com/"],
-		["/archive/weekly/", "", "https://weekly.mailcheapmail.com/"],
-		["/archive/weekly/p/my-issue", "?ref=x", "https://weekly.mailcheapmail.com/p/my-issue?ref=x"],
-		["/archive/monthly/authors/jane-doe", "", "https://monthly.mailcheapmail.com/authors/jane-doe"],
-		["/archive/monthly/sitemap", "", "https://monthly.mailcheapmail.com/sitemap.xml"],
-		["/archive/monthly/robots", "", "https://monthly.mailcheapmail.com/robots.txt"],
+		["/archive/weekly", "", "https://weekly.mailcrumail.com/"],
+		["/archive/weekly/", "", "https://weekly.mailcrumail.com/"],
+		["/archive/weekly/p/my-issue", "?ref=x", "https://weekly.mailcrumail.com/p/my-issue?ref=x"],
+		["/archive/monthly/authors/jane-doe", "", "https://monthly.mailcrumail.com/authors/jane-doe"],
+		["/archive/monthly/sitemap", "", "https://monthly.mailcrumail.com/sitemap.xml"],
+		["/archive/monthly/robots", "", "https://monthly.mailcrumail.com/robots.txt"],
 	];
 	for (const [pathname, search, expected] of cases) assert.equal(getArchiveHostUrl(pathname, search, shared), expected, pathname);
 	assert.equal(getArchiveHostUrl("/archive/weekly/p/x", "", null), null, "without SHARED_DOMAIN the archive stays on the app");
@@ -20,20 +20,20 @@ test("app-domain archive paths move to the newsletter's shared subdomain", () =>
 });
 
 test("shared subdomains map to newsletter slugs, one label deep", () => {
-	const shared = "mailcheapmail.com";
-	assert.equal(getSlugForSharedHost("Weekly.Mailcheapmail.com:443", shared), "weekly");
-	assert.equal(getSlugForSharedHost("a.b.mailcheapmail.com", shared), null);
-	assert.equal(getSlugForSharedHost("mailcheapmail.com", shared), null);
+	const shared = "mailcrumail.com";
+	assert.equal(getSlugForSharedHost("Weekly.Mailcrumail.com:443", shared), "weekly");
+	assert.equal(getSlugForSharedHost("a.b.mailcrumail.com", shared), null);
+	assert.equal(getSlugForSharedHost("mailcrumail.com", shared), null);
 	assert.equal(getSlugForSharedHost("weekly.example.com", shared), null);
-	assert.equal(getSlugForSharedHost("weekly.mailcheapmail.com", null), null);
+	assert.equal(getSlugForSharedHost("weekly.mailcrumail.com", null), null);
 });
 
 test("a newsletter's host is its verified archive subdomain, else its shared subdomain, else the app", () => {
-	const shared = "mailcheapmail.com";
+	const shared = "mailcrumail.com";
 	assert.equal(getNewsletterHost({ slug: "weekly", archiveHost: "news.example.com" }, shared), "news.example.com");
-	assert.equal(getNewsletterHost({ slug: "weekly" }, shared), "weekly.mailcheapmail.com");
+	assert.equal(getNewsletterHost({ slug: "weekly" }, shared), "weekly.mailcrumail.com");
 	assert.equal(getNewsletterHost({ slug: "weekly" }, null), null);
-	assert.equal(getLinkBaseUrl({ slug: "weekly" }, { sharedDomain: shared, appUrl: "https://app.test" }), "https://weekly.mailcheapmail.com");
+	assert.equal(getLinkBaseUrl({ slug: "weekly" }, { sharedDomain: shared, appUrl: "https://app.test" }), "https://weekly.mailcrumail.com");
 	assert.equal(getLinkBaseUrl({ slug: "weekly" }, { sharedDomain: null, appUrl: "https://app.test" }), "https://app.test");
 });
 
@@ -87,7 +87,7 @@ test("share links carry the issue URL", () => {
 test("Feedback-ID has campaign, newsletter, kind and sender fields", () => {
 	assert.equal(
 		getFeedbackId({ campaignId: "64f1a2b3c4d5e6f7a8b9c0d1", kind: "campaign", newsletterSlug: "weekly" }),
-		"64f1a2b3c4d5e6f7a8b9c0d1:weekly:campaign:mailcheap"
+		"64f1a2b3c4d5e6f7a8b9c0d1:weekly:campaign:mailcru"
 	);
-	assert.equal(getFeedbackId({ kind: "welcome", newsletterSlug: "week:ly" }), "welcome:weekly:welcome:mailcheap");
+	assert.equal(getFeedbackId({ kind: "welcome", newsletterSlug: "week:ly" }), "welcome:weekly:welcome:mailcru");
 });

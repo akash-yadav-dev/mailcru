@@ -194,5 +194,5 @@ const STEPS = [
 	{ key: "name", title: "What's your newsletter called?", hint: "You can change it later." },
 	{ key: "description", title: "What's it about?", hint: "One line, under its name on your signup form and archive.", isOptional: true },
 	{ key: "fromName", title: "Who's it from?", hint: "The name your readers see in their inbox." },
-	{ key: "list", title: "Do you have subscribers already?", hint: "MailCheap suggests the plan that fits. You import them later." },
+	{ key: "list", title: "Do you have subscribers already?", hint: "MailCru suggests the plan that fits. You import them later." },
 ];

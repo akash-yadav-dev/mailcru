@@ -35,7 +35,7 @@ async function customer(email, { hasPlan = false } = {}) {
 		catchRedirect(
 			m.newsletters.saveNewsletter(
 				null,
-				form({ name: `${slug} news`, slug, fromEmail: `hello@${slug}.mailcheapmail.com`, postalAddress: "1 Main St, Paris" })
+				form({ name: `${slug} news`, slug, fromEmail: `hello@${slug}.mailcrumail.com`, postalAddress: "1 Main St, Paris" })
 			)
 		)
 	);
@@ -65,7 +65,7 @@ function connectApp(user) {
 	const now = new Date();
 	return mongoose.connection.db
 		.collection("oauthConsent")
-		.insertOne({ clientId: "https://chatgpt.com/connector/mailcheap", userId: user.userId, scopes: ["openid", "mcp"], createdAt: now, updatedAt: now });
+		.insertOne({ clientId: "https://chatgpt.com/connector/mailcru", userId: user.userId, scopes: ["openid", "mcp"], createdAt: now, updatedAt: now });
 }
 
 function tomorrow() {

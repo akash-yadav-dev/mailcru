@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 import { addVerifiedDomain, as, callApi, catchRedirect, form, jsonRequest, mockStripe, platformEmails, signIn, startTestApp, withEnv } from "./helpers/app.mjs";
 import { published } from "./stubs/qstash.mjs";
 
-// A self-hosted server: no MAILCHEAP_CLOUD, no Stripe keys, no shared domain, and sign-in limited to
+// A self-hosted server: no MAILCRU_CLOUD, no Stripe keys, no shared domain, and sign-in limited to
 // ALLOWED_EMAILS and ADMIN_EMAILS. Google answers in memory.
 const ALLOWED = "owner@example.com, @team.example.org";
 const GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token";
@@ -93,13 +93,13 @@ async function signInWithGoogle({ email, verified = true, sub = email }) {
 
 before(async () => {
 	app = await startTestApp({
-		MAILCHEAP_CLOUD: "",
+		MAILCRU_CLOUD: "",
 		STRIPE_SECRET_KEY: "",
 		STRIPE_WEBHOOK_SECRET: "",
 		SHARED_DOMAIN: "",
 		ALLOWED_EMAILS: ALLOWED,
 		ADMIN_EMAILS: "admin@example.com",
-		EMAIL_FROM: "MailCheap <login@mail.example.com>",
+		EMAIL_FROM: "MailCru <login@mail.example.com>",
 		GOOGLE_CLIENT_ID: "google-client",
 		GOOGLE_CLIENT_SECRET: "google-secret",
 		QSTASH_CURRENT_SIGNING_KEY: "sig-current",

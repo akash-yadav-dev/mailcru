@@ -187,7 +187,7 @@ describe("PostShiba tenants", () => {
 		assert.ok(account.postshiba.tenantId);
 		assert.equal(account.postshiba.provisionedAt, undefined);
 
-		// A lost write: PostShiba has the tenant, MailCheap forgot it.
+		// A lost write: PostShiba has the tenant, MailCru forgot it.
 		await m.Account.updateOne({ _id: user.accountId }, { $unset: { "postshiba.tenantId": 1 } });
 		await m.tenants.provisionTenant(user.accountId);
 		account = await loadAccount(user);
@@ -240,7 +240,7 @@ describe("PostShiba domains", () => {
 		const domain = await m.Domain.findOne({ accountId: owner.accountId, domain: "ps-owner.dev" }).lean();
 		const domainsBefore = fake.state.domains.size;
 		assert.deepEqual(await as(other, () => m.domains.addDomainAction(null, form({ domain: "ps-owner.dev" }))), {
-			error: "ps-owner.dev is used by another MailCheap account",
+			error: "ps-owner.dev is used by another MailCru account",
 		});
 		assert.equal(fake.state.domains.size, domainsBefore, "PostShiba never heard of the second claim");
 		assert.deepEqual(await as(other, () => m.domains.checkDomainAction(String(domain._id))), { error: "Domain not found" });
@@ -476,7 +476,7 @@ describe("the shared address on PostShiba", () => {
 		await activate(user);
 		await createNewsletter(user, "ps-shared");
 		const newsletter = await m.Newsletter.findOne({ accountId: user.accountId }).lean();
-		const subdomain = "ps-shared.mailcheapmail.com";
+		const subdomain = "ps-shared.mailcrumail.com";
 		assert.equal(newsletter.fromEmail, `hello@${subdomain}`);
 		const atPostshiba = fake.state.domains.get(newsletter.sharedSender.providerDomainId);
 		assert.equal(atPostshiba.name, subdomain);
@@ -486,7 +486,7 @@ describe("the shared address on PostShiba", () => {
 			[
 				["CNAME", `ps1._domainkey.${subdomain}`, `${atPostshiba.id}.customers.postshiba.test`],
 				["CNAME", `rp.${subdomain}`, "rp.postshiba.test"],
-				["CNAME", subdomain, "cname.mailcheap.ai"],
+				["CNAME", subdomain, "cname.mailcru.com"],
 			]
 		);
 		assert.equal(fake.callsTo("POST", /\/verify$/).filter(({ path }) => path.includes(atPostshiba.id)).length, 0, "no verification budget used");
@@ -496,7 +496,7 @@ describe("the shared address on PostShiba", () => {
 		const { body } = fake.state.sends.at(-1);
 		assert.equal(body.from, `"Jane" <hello@${subdomain}>`);
 		assert.equal(body.reply_to, "ps-shared@example.com", "replies go to the owner");
-		assert.match(body.headers["List-Unsubscribe"], /^<https:\/\/ps-shared\.mailcheapmail\.com\/api\/unsubscribe\?token=/);
+		assert.match(body.headers["List-Unsubscribe"], /^<https:\/\/ps-shared\.mailcrumail\.com\/api\/unsubscribe\?token=/);
 		assert.equal((await m.Newsletter.findOne({ accountId: user.accountId }).lean()).sharedSender.verified, true);
 	});
 
@@ -505,13 +505,13 @@ describe("the shared address on PostShiba", () => {
 		const before = { tenants: fake.state.tenants.size, domains: fake.state.domains.size, records: dnsRecords.size };
 		await createNewsletter(user, "ps-early");
 		let newsletter = await m.Newsletter.findOne({ accountId: user.accountId }).lean();
-		assert.equal(newsletter.fromEmail, "hello@ps-early.mailcheapmail.com");
+		assert.equal(newsletter.fromEmail, "hello@ps-early.mailcrumail.com");
 		assert.equal(newsletter.sharedSender?.domain, undefined);
 		assert.deepEqual({ tenants: fake.state.tenants.size, domains: fake.state.domains.size, records: dnsRecords.size }, before);
 
 		await m.billing.applySubscription(await loadAccount(user), subscription("ps-early"));
 		newsletter = await m.Newsletter.findOne({ accountId: user.accountId }).lean();
-		assert.equal(newsletter.sharedSender.domain, "ps-early.mailcheapmail.com");
+		assert.equal(newsletter.sharedSender.domain, "ps-early.mailcrumail.com");
 		assert.equal(fake.state.domains.get(newsletter.sharedSender.providerDomainId).tenant_id, (await loadAccount(user)).postshiba.tenantId);
 		assert.equal(newsletter.sharedSender.dnsRecordIds.length, 3);
 	});
@@ -526,9 +526,9 @@ describe("the shared address on PostShiba", () => {
 		fake.state.isDnsVisible = false;
 		try {
 			const id = await draft(user);
-			assert.match((await as(user, () => m.campaigns.sendTestCampaign(id))).error, /hello@ps-waiting.mailcheapmail.com is still being set up/);
+			assert.match((await as(user, () => m.campaigns.sendTestCampaign(id))).error, /hello@ps-waiting.mailcrumail.com is still being set up/);
 			const { sharedSender } = await m.Newsletter.findOne({ accountId: user.accountId }).lean();
-			assert.equal(sharedSender.domain, "ps-waiting.mailcheapmail.com", "set up again by the send");
+			assert.equal(sharedSender.domain, "ps-waiting.mailcrumail.com", "set up again by the send");
 			assert.equal(sharedSender.verified, false);
 
 			fake.state.isDnsVisible = true;
@@ -536,7 +536,7 @@ describe("the shared address on PostShiba", () => {
 			await m.Newsletter.updateOne({ accountId: user.accountId, _id: user.newsletterId }, { $set: { "sharedSender.checkedAt": new Date(Date.now() - 120_000) } });
 			assert.deepEqual(await as(user, () => m.campaigns.sendTestCampaign(id)), { ok: true });
 
-			await m.Newsletter.updateOne({ accountId: user.accountId, _id: user.newsletterId }, { $set: { fromEmail: "hello@ps-shared.mailcheapmail.com" } });
+			await m.Newsletter.updateOne({ accountId: user.accountId, _id: user.newsletterId }, { $set: { fromEmail: "hello@ps-shared.mailcrumail.com" } });
 			assert.match((await as(user, () => m.campaigns.sendTestCampaign(id))).error, /The shared address for this newsletter is hello@ps-waiting/, "never another account's");
 		} finally {
 			fake.state.isDnsVisible = true;

@@ -362,7 +362,7 @@ export default function FormNewsletter({ newsletter, domains, sharedDomain, isSe
 					on its button keeps them. Anyone who doesn&apos;t answer by a send{" "}
 					{LAST_CHANCE_DAYS} days later becomes dormant: not unsubscribed, not deleted, and back if they sign up again.
 				</p>
-				<Field label="Ignored issues" hint="In a row, counting from the first issue MailCheap sent">
+				<Field label="Ignored issues" hint="In a row, counting from the first issue MailCru sent">
 					<Input
 						name="cleanupIssues"
 						type="number"

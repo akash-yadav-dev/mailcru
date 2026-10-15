@@ -1,19 +1,21 @@
-# MailCheap
+# MailCru
 
-MailCheap is a newsletter app: write an issue, send it to your list, publish it on the web. Self-host it free with your own Amazon SES or PostShiba account, or let us run it on [MailCheap Cloud](https://mailcheap.ai).
+MailCru is a newsletter app: write an issue, send it to your list, publish it on the web. Self-host it free with your own Amazon SES or PostShiba account, or let us run it on [MailCru Cloud](https://mailcru.com).
 
-![MailCheap overview](docs/screenshots/overview.webp)
+MailCru is a fork of [MailCheap](https://github.com/marclou/mailcheap), made by [Marc Lou](https://x.com/marclou), and stays under the same AGPL-3.0 license. See [NOTICE.md](NOTICE.md) for what changed.
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fmarclou%2Fmailcheap&project-name=mailcheap&repository-name=mailcheap&env=MONGODB_URI,BETTER_AUTH_SECRET,ADMIN_EMAILS,EMAIL_FROM&envDescription=Database%2C%20signing%20secret%20%2832%2B%20characters%3A%20openssl%20rand%20-base64%2048%29%2C%20your%20email%20to%20sign%20in%20with%2C%20and%20the%20from%20address%20of%20sign-in%20codes.%20Add%20RESEND_API_KEY%2C%20or%20set%20up%20SES%20or%20PostShiba%2C%20so%20the%20codes%20can%20reach%20you.&envLink=https%3A%2F%2Fgithub.com%2Fmarclou%2Fmailcheap%23environment-variables)
+![MailCru overview](docs/screenshots/overview.webp)
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fakash-yadav-dev%2Fmailcru&project-name=mailcru&repository-name=mailcru&env=MONGODB_URI,BETTER_AUTH_SECRET,ADMIN_EMAILS,EMAIL_FROM&envDescription=Database%2C%20signing%20secret%20%2832%2B%20characters%3A%20openssl%20rand%20-base64%2048%29%2C%20your%20email%20to%20sign%20in%20with%2C%20and%20the%20from%20address%20of%20sign-in%20codes.%20Add%20RESEND_API_KEY%2C%20or%20set%20up%20SES%20or%20PostShiba%2C%20so%20the%20codes%20can%20reach%20you.&envLink=https%3A%2F%2Fgithub.com%2Fakash-yadav-dev%2Fmailcru%23environment-variables)
 
 > [!IMPORTANT]
-> **No support.** Issues are off, and setup questions go unanswered. Fork it, deploy it, make it yours. Or let us run it: [mailcheap.ai](https://mailcheap.ai).
+> **No support.** Issues are off, and setup questions go unanswered. Fork it, deploy it, make it yours. Or let us run it: [mailcru.com](https://mailcru.com).
 
 ## Self-host it free, or let us run it
 
-This repository is the whole app: the dashboard, the public archive, the REST API, the MCP server and the docs. MailCheap Cloud runs this same code with `MAILCHEAP_CLOUD=true`, which adds plans and Stripe billing, and our own sending accounts. Its marketing site (the landing, pricing and legal pages) isn't part of the open source. Every change to the app ships to both.
+This repository is the whole app: the dashboard, the public archive, the REST API, the MCP server and the docs. MailCru Cloud runs this same code with `MAILCRU_CLOUD=true`, which adds plans and Stripe billing, and our own sending accounts. Its marketing site (the landing, pricing and legal pages) isn't part of the open source. Every change to the app ships to both.
 
-| | Self-hosted | MailCheap Cloud |
+| | Self-hosted | MailCru Cloud |
 | --- | --- | --- |
 | Price | Free, plus what your provider charges per email | From $19 a month |
 | Sending | Your Amazon SES or PostShiba account | Ours, set up for you |
@@ -25,7 +27,7 @@ This repository is the whole app: the dashboard, the public archive, the REST AP
 
 Newsletter platforms charge for every subscriber, every month. With your own sending account you pay for the emails you send: 10,000 readers and 4 issues a month is 40,000 emails, about $4 to $6 on Amazon SES.
 
-MailCheap is the rest of what a newsletter needs, in one Next.js app: an editor, a list, signup forms, unsubscribe handling, bounce and complaint handling, stats and a public archive. Your list stays in your database, and everything the dashboard does also works from an AI agent, through a REST API and an MCP server.
+MailCru is the rest of what a newsletter needs, in one Next.js app: an editor, a list, signup forms, unsubscribe handling, bounce and complaint handling, stats and a public archive. Your list stays in your database, and everything the dashboard does also works from an AI agent, through a REST API and an MCP server.
 
 ## Features
 
@@ -41,7 +43,7 @@ MailCheap is the rest of what a newsletter needs, in one Next.js app: an editor,
 - A signup form on the archive, and a signup API with API keys.
 - Confirmed opt-in, on by default. Welcome email.
 - CSV import from any platform. It leaves out invalid, misspelled (gmial.com), spam trap, role, throwaway, duplicate and suppressed addresses, and records that your readers agreed. Signups refuse misspellings with a suggestion.
-- Contacts you add by hand are subscribed at once, without a confirmation email, once you tick that they agreed. MailCheap records who ticked it and when.
+- Contacts you add by hand are subscribed at once, without a confirmation email, once you tick that they agreed. MailCru records who ticked it and when.
 - Rate limits on signups, sign-in, unsubscribes, slug changes, the API, and the dashboard's test emails, sends, imports and uploads, on by default. An account's API keys, connected apps and dashboard share its limits, so more keys don't raise them.
 
 **Keep it healthy**
@@ -49,7 +51,7 @@ MailCheap is the rest of what a newsletter needs, in one Next.js app: an editor,
 - Bounce and complaint handling, and a suppression list per account.
 - A send pauses past 2% hard bounces (at least 5) or 0.08% complaints (at least 2), and its owner gets an email and can resume it. One complaint alone never stops anything.
 - Clear abuse blocks the whole account until an admin unblocks it: a send, a first send's slice or the last 7 days past 5% hard bounces (at least 10) or 0.3% complaints (at least 3), a spam trap hit, or the email provider stopping the account. Nothing goes out while it's blocked, welcome emails included, and the tracked links in its emails show a page saying they're disabled instead of redirecting; unsubscribe and confirmation links keep working.
-- On MailCheap Cloud, a new account's campaigns go out over 24, 16 and 12 hours, then 8, for its first 30 days. One account per inbox (jane.doe+2@gmail.com is jane.doe@gmail.com), no throwaway inboxes, and 3 new accounts a day per IP address.
+- On MailCru Cloud, a new account's campaigns go out over 24, 16 and 12 hours, then 8, for its first 30 days. One account per inbox (jane.doe+2@gmail.com is jane.doe@gmail.com), no throwaway inboxes, and 3 new accounts a day per IP address.
 - One-click unsubscribe (RFC 8058 `List-Unsubscribe` headers) and an unsubscribe page, with signed links.
 - List cleanup, on by default: readers who ignored several issues get one "do you still want this?" email, then stop getting issues.
 - Open and click tracking on your own domain, with link scanners filtered out.
@@ -69,7 +71,7 @@ MailCheap is the rest of what a newsletter needs, in one Next.js app: an editor,
 **Accounts**
 
 - Sign-in with a code by email, or with Google. On a self-hosted server, only the emails you allow.
-- One account per person, with up to 3 newsletters, each with its contacts and campaigns, and the account's domains and API keys, which they share. The dashboard shows one newsletter at a time: a menu under the logo switches. Admins see every account and can block or unblock it, or give it a free plan on MailCheap Cloud.
+- One account per person, with up to 3 newsletters, each with its contacts and campaigns, and the account's domains and API keys, which they share. The dashboard shows one newsletter at a time: a menu under the logo switches. Admins see every account and can block or unblock it, or give it a free plan on MailCru Cloud.
 - An account page for the name and photo, the email and billing, and deleting the account: it stops at once, and its data is deleted 30 days later unless its owner signs in and restores it.
 
 ## Screenshots
@@ -101,7 +103,7 @@ All names and addresses in the screenshots are made up.
 | [Upstash Redis](https://upstash.com/docs/redis) (optional) | Rate limits shared by every server instance | Free tier |
 | [Amazon S3](https://aws.amazon.com/s3/) with [CloudFront](https://aws.amazon.com/cloudfront/), or [Vercel Blob](https://vercel.com/docs/vercel-blob) (optional) | Image uploads in the editor, the newsletter settings and the API | S3 and CloudFront: pay per use. Blob: free tier |
 
-Without Redis, MailCheap counts the same rate limits in each server instance's memory. That still stops a script hammering a form, but on serverless hosts the limits aren't shared between instances and reset on each deploy. Add Redis before you put a signup form on a busy site.
+Without Redis, MailCru counts the same rate limits in each server instance's memory. That still stops a script hammering a form, but on serverless hosts the limits aren't shared between instances and reset on each deploy. Add Redis before you put a signup form on a busy site.
 
 Without S3 or Blob, image uploads are off. HTML and Markdown campaigns can still use images hosted anywhere.
 
@@ -114,18 +116,18 @@ Plan for about an hour, most of it waiting for DNS and for your provider to appr
 1. Create a free cluster on [MongoDB Atlas](https://www.mongodb.com/atlas).
 2. **Database Access**: add a user with a password and the "Read and write to any database" role.
 3. **Network Access**: allow `0.0.0.0/0`. Vercel doesn't have fixed IP addresses.
-4. **Connect > Drivers**: copy the connection string and add a database name before the `?`, like `...mongodb.net/mailcheap?retryWrites=true`. That's your `MONGODB_URI`.
+4. **Connect > Drivers**: copy the connection string and add a database name before the `?`, like `...mongodb.net/mailcru?retryWrites=true`. That's your `MONGODB_URI`.
 
 ### 2. Deploy
 
 1. Click **Deploy** above.
-2. Fill in `MONGODB_URI`, `BETTER_AUTH_SECRET` (at least 32 characters; generate it with `openssl rand -base64 48`), `ADMIN_EMAILS` (your email) and `EMAIL_FROM` (like `MailCheap <login@mail.example.com>`, on a domain your Resend account or email provider verified). With a short secret, MailCheap refuses to start and the logs say why.
+2. Fill in `MONGODB_URI`, `BETTER_AUTH_SECRET` (at least 32 characters; generate it with `openssl rand -base64 48`), `ADMIN_EMAILS` (your email) and `EMAIL_FROM` (like `MailCru <login@mail.example.com>`, on a domain your Resend account or email provider verified). With a short secret, MailCru refuses to start and the logs say why.
 3. Sign-in codes need a way to reach you. The quickest is [Resend](https://resend.com): verify `EMAIL_FROM`'s domain there and add `RESEND_API_KEY`. Without it, codes go through SES or PostShiba once step 4 is done.
 4. Open `https://<your-project>.vercel.app/signin` and sign in with your email.
 
 Sending stays off until you finish the next steps, so nothing goes out to readers by mistake. On any other Node.js host: `npm ci && npm run build && npm start`, with the same variables, behind HTTPS. `/api/health` answers 200, or 503 with what to fix.
 
-If you plan to use your own domain for the dashboard (like `mailcheap.example.com`), add it in Vercel now and set `APP_URL` to it. Links in your emails use `APP_URL` until a newsletter's archive subdomain is set up, so it should be final before your first send.
+If you plan to use your own domain for the dashboard (like `mailcru.example.com`), add it in Vercel now and set `APP_URL` to it. Links in your emails use `APP_URL` until a newsletter's archive subdomain is set up, so it should be final before your first send.
 
 ### 3. Who can sign in
 
@@ -135,15 +137,15 @@ Everyone gets an account of their own, with up to 3 newsletters and their contac
 
 ### 4. Email provider
 
-Pick Amazon SES or PostShiba (invite only for now). `EMAIL_PROVIDER` picks one; without it, MailCheap uses PostShiba when `POSTSHIBA_API_KEY` is set and SES otherwise. Every account gets its own tenant there, with its own domains, suppression list and pause switch. MailCheap creates them; you set up the provider account and its events once.
+Pick Amazon SES or PostShiba (invite only for now). `EMAIL_PROVIDER` picks one; without it, MailCru uses PostShiba when `POSTSHIBA_API_KEY` is set and SES otherwise. Every account gets its own tenant there, with its own domains, suppression list and pause switch. MailCru creates them; you set up the provider account and its events once.
 
 #### Amazon SES
 
-Use one AWS region for everything below (the examples use `us-east-1`). An AWS account just for MailCheap is best: SES reputation and limits are per AWS account.
+Use one AWS region for everything below (the examples use `us-east-1`). An AWS account just for MailCru is best: SES reputation and limits are per AWS account.
 
 1. **Request production access.** New accounts are in the sandbox (200 emails a day, verified recipients only). In **Account dashboard > Request production access**, pick Marketing, and explain that readers opt in, that bounces and complaints are suppressed automatically, and that every email has one-click unsubscribe. AWS usually answers within a day.
-2. **Create an SNS topic** for events, like `mailcheap-ses-events`, and switch it to signature version 2, which signs messages with SHA256 instead of SHA1: `aws sns set-topic-attributes --topic-arn <topic-arn> --attribute-name SignatureVersion --attribute-value 2`. Then **Create subscription** with protocol HTTPS and endpoint `https://<your-app>/api/webhooks/ses`, raw message delivery off. MailCheap confirms the subscription by itself once it's deployed with the variables of step 4.
-3. **Create an IAM user for MailCheap** with this policy, then create an access key for it:
+2. **Create an SNS topic** for events, like `mailcru-ses-events`, and switch it to signature version 2, which signs messages with SHA256 instead of SHA1: `aws sns set-topic-attributes --topic-arn <topic-arn> --attribute-name SignatureVersion --attribute-value 2`. Then **Create subscription** with protocol HTTPS and endpoint `https://<your-app>/api/webhooks/ses`, raw message delivery off. MailCru confirms the subscription by itself once it's deployed with the variables of step 4.
+3. **Create an IAM user for MailCru** with this policy, then create an access key for it:
 
 ```json
 {
@@ -177,7 +179,7 @@ Use one AWS region for everything below (the examples use `us-east-1`). An AWS a
 ```
 
 4. **Add the variables** and redeploy: `SES_REGION`, `SES_ACCESS_KEY_ID`, `SES_SECRET_ACCESS_KEY`, `SES_AWS_ACCOUNT_ID` (the 12-digit account ID) and `SES_SNS_TOPIC_ARN`. Each account's configuration set publishes its events to that topic.
-5. **Optional: tenant pauses.** SES pauses tenants that send badly. To block the account in MailCheap too, send SES's tenant status and reputation finding events from EventBridge to a second SNS topic, subscribe `https://<your-app>/api/webhooks/ses-tenants` to it, and set `SES_TENANT_SNS_TOPIC_ARN`.
+5. **Optional: tenant pauses.** SES pauses tenants that send badly. To block the account in MailCru too, send SES's tenant status and reputation finding events from EventBridge to a second SNS topic, subscribe `https://<your-app>/api/webhooks/ses-tenants` to it, and set `SES_TENANT_SNS_TOPIC_ARN`.
 
 Without Resend, sign-in codes and alerts go out through SES from `EMAIL_FROM`, outside every tenant, so its domain has to be verified in the AWS account before your first sign-in: **Identities > Create identity > Domain**, with Easy DKIM. In the sandbox, the addresses you sign in with have to be verified too.
 
@@ -190,7 +192,7 @@ PostShiba approves production sending by hand: until then, sends to anyone outsi
 3. **Webhook.** One endpoint for the whole team (no cluster or tenant) at `https://<your-app>/api/webhooks/postshiba` with the events `processed`, `delivered`, `deferred`, `bounce`, `dropped`, `spamreport` and `unsubscribe`. Its secret goes in `POSTSHIBA_WEBHOOK_SECRET`.
 4. **Encryption key.** `CREDENTIALS_ENCRYPTION_KEY`, generated once with `openssl rand -base64 32`. It encrypts each tenant's SMTP password.
 
-MailCheap creates the rest: a tenant per account (slug `mc-<accountId>`), an SMTP credential for it on each cluster (one in all on a single cluster), and its domains. Creating credentials and domains and running domain checks share PostShiba's budget of 60 an hour per key; a failed setup is retried at the account's next send.
+MailCru creates the rest: a tenant per account (slug `mc-<accountId>`), an SMTP credential for it on each cluster (one in all on a single cluster), and its domains. Creating credentials and domains and running domain checks share PostShiba's budget of 60 an hour per key; a failed setup is retried at the account's next send.
 
 Without Resend, sign-in codes and alerts go through a tenant of their own, `mc-platform`, on the transactional cluster. The first one adds `EMAIL_FROM`'s domain there, and the server log lists the two CNAME records it needs; once PostShiba finds them, codes go out. A domain belongs to one tenant at PostShiba, so `EMAIL_FROM` needs a domain or subdomain that no newsletter sends from.
 
@@ -199,27 +201,27 @@ Without Resend, sign-in codes and alerts go through a tenant of their own, `mc-p
 1. In the [Upstash console](https://console.upstash.com/qstash), open QStash and copy `QSTASH_TOKEN`, `QSTASH_CURRENT_SIGNING_KEY` and `QSTASH_NEXT_SIGNING_KEY` (and `QSTASH_URL` if you picked a region other than the default).
 2. Add them and redeploy.
 
-QStash calls `APP_URL/api/jobs/...` to send each batch, so the app has to be reachable on the internet. MailCheap checks QStash's signature on every job.
+QStash calls `APP_URL/api/jobs/...` to send each batch, so the app has to be reachable on the internet. MailCru checks QStash's signature on every job.
 
 ### 6. Turn sending on
 
-1. In MailCheap, open **Domains** and add the domain your newsletter sends from. Use a subdomain like `mail.example.com`, so your main domain's email is unaffected. Add the DNS records it lists (DKIM, return path, and DMARC if your root domain has none), then click **Check now**.
+1. In MailCru, open **Domains** and add the domain your newsletter sends from. Use a subdomain like `mail.example.com`, so your main domain's email is unaffected. Add the DNS records it lists (DKIM, return path, and DMARC if your root domain has none), then click **Check now**.
 2. Create your newsletter. The from address must be on that domain, and the postal address shows in every email's footer (anti-spam laws require one).
 3. Set `SENDING_ENABLED=true` and redeploy.
 4. Write a campaign, send yourself a test, then send. A first send to new contacts goes out in steps by itself; for a new domain, also set a limit to reach your most engaged readers first, and use **Send to more** on the report once the first step looks healthy.
 
 ### Optional
 
-- **Archive on its own subdomain.** Each domain comes with an archive subdomain (`news.<domain>` by default). Set `ARCHIVE_CNAME_TARGET` to the host it should point at (`cname.vercel-dns.com` on Vercel) and add the subdomain to your hosting (on Vercel, to the project's domains): MailCheap doesn't. Once its CNAME resolves, **Check now** moves the archive, tracked links and unsubscribe links there.
+- **Archive on its own subdomain.** Each domain comes with an archive subdomain (`news.<domain>` by default). Set `ARCHIVE_CNAME_TARGET` to the host it should point at (`cname.vercel-dns.com` on Vercel) and add the subdomain to your hosting (on Vercel, to the project's domains): MailCru doesn't. Once its CNAME resolves, **Check now** moves the archive, tracked links and unsubscribe links there.
 
   This is the safer setup: issue pages show HTML from your editor and from API keys, and on their own domain that HTML never shares the dashboard's origin. Without one, the archive stays at `/archive/<slug>` on the app's domain, where the sanitizer, the sandboxed frame and the Content Security Policy protect it.
-- **Shared domain.** `SHARED_DOMAIN` gives every newsletter without a domain of its own an address of its own, `hello@<slug>.SHARED_DOMAIN`, and its archive at `<slug>.SHARED_DOMAIN`. MailCheap adds each subdomain at the provider and has its records published, and removed when the slug changes, by a DNS helper (`DNS_BROKER_URL`, `DNS_BROKER_SECRET`): on MailCheap Cloud a Vercel project of its own that holds the Vercel token, so the app never does, and only writes a shared address's records. Without one, DNS automation is off and shared addresses can't be set up. Its DNS has to be on Vercel, with `*.SHARED_DOMAIN` on the project. Add one DMARC record for the whole domain yourself: `_dmarc.SHARED_DOMAIN` TXT `v=DMARC1; p=none;`. It can be the app's own domain, as MailCheap Cloud's is `mailcheap.ai`: slugs can't take `www` or the other names in `lib/reserved-slugs.js`, and those hosts never open an archive. Without a shared domain, every newsletter sends from a domain of its own.
+- **Shared domain.** `SHARED_DOMAIN` gives every newsletter without a domain of its own an address of its own, `hello@<slug>.SHARED_DOMAIN`, and its archive at `<slug>.SHARED_DOMAIN`. MailCru adds each subdomain at the provider and has its records published, and removed when the slug changes, by a DNS helper (`DNS_BROKER_URL`, `DNS_BROKER_SECRET`): on MailCru Cloud a Vercel project of its own that holds the Vercel token, so the app never does, and only writes a shared address's records. Without one, DNS automation is off and shared addresses can't be set up. Its DNS has to be on Vercel, with `*.SHARED_DOMAIN` on the project. Add one DMARC record for the whole domain yourself: `_dmarc.SHARED_DOMAIN` TXT `v=DMARC1; p=none;`. It can be the app's own domain, as MailCru Cloud's is `mailcru.com`: slugs can't take `www` or the other names in `lib/reserved-slugs.js`, and those hosts never open an archive. Without a shared domain, every newsletter sends from a domain of its own.
 - **Google sign-in.** Create an OAuth client (web application) with the redirect URI `<APP_URL>/api/auth/callback/google`, then set `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`. The allowlist applies, and a Google sign-in joins an existing user only when Google verified that email.
 - **Image uploads.** The quickest is Vercel Blob: in Vercel, **Storage > Create > Blob**, connect it to the project, and redeploy. To serve images from a subdomain of your own (like `cdn.example.com`), put an S3 bucket behind CloudFront. It takes over new uploads, and images already on Blob keep their URLs:
   1. Create a private S3 bucket with Block Public Access on.
   2. In ACM, request a certificate for the subdomain in `us-east-1`, validated by DNS. If your domain has CAA records, add `0 issue "amazon.com"`.
   3. Create a CloudFront distribution: the bucket as origin through Origin Access Control (add the bucket policy CloudFront gives you), viewer protocol HTTPS only, the CachingOptimized cache policy, and the subdomain as alternate domain name with that certificate. Point the subdomain at the distribution with a CNAME.
-  4. Create an IAM user for MailCheap with this policy, then an access key for it. Deleting an account deletes its images and clears them from CloudFront's cache, hence `s3:DeleteObject` and `cloudfront:CreateInvalidation`:
+  4. Create an IAM user for MailCru with this policy, then an access key for it. Deleting an account deletes its images and clears them from CloudFront's cache, hence `s3:DeleteObject` and `cloudfront:CreateInvalidation`:
 
      ```json
      {
@@ -250,24 +252,24 @@ QStash calls `APP_URL/api/jobs/...` to send each batch, so the app has to be rea
 - **Authenticate everything:** DKIM, SPF through the custom return path, and DMARC on the root domain.
 - **Only email people who asked.** Never import a bought or scraped list. If bots fill your forms, turn on confirmed opt-in.
 - **Warm up a new domain.** Send to your most engaged readers first, and grow each send over a few weeks.
-- **Watch complaints and bounces.** Keep complaints under 0.1% and bounces under 2%. MailCheap pauses a send past 0.08% complaints or 2% bounces, and blocks the account past 0.3% complaints or 5% bounces. Add your domain to [Google Postmaster Tools](https://postmaster.google.com) to see your spam rate at Gmail.
+- **Watch complaints and bounces.** Keep complaints under 0.1% and bounces under 2%. MailCru pauses a send past 0.08% complaints or 2% bounces, and blocks the account past 0.3% complaints or 5% bounces. Add your domain to [Google Postmaster Tools](https://postmaster.google.com) to see your spam rate at Gmail.
 - **Make leaving easy.** Every email has one-click unsubscribe headers and a footer link, which Gmail and Yahoo require.
 - **Clean your list.** Keep list cleanup on to stop emailing people who never open. New newsletters start with it on.
 - **Keep emails under 100 KB**, or Gmail clips them and hides the unsubscribe link.
 
 ## Environment variables
 
-| Variable | Self-hosted | MailCheap Cloud | What it does |
+| Variable | Self-hosted | MailCru Cloud | What it does |
 | --- | --- | --- | --- |
 | `MONGODB_URI` | Required | Required | MongoDB connection string with a database name |
 | `BETTER_AUTH_SECRET` | Required | Required | Signs sessions and every link in sent emails. 32+ random characters, or the server refuses to start. Rotating it signs everyone out and breaks links in emails already sent |
 | `APP_URL` | Outside Vercel | Outside Vercel | Public URL of the app: email links, sign-in, Stripe return URLs and the base URL in the docs. On Vercel it defaults to the production domain |
 | `ADMIN_EMAILS` | Required | Optional | Comma-separated emails that can open `/admin`. On a self-hosted server they can also sign in |
 | `ALLOWED_EMAILS` | Optional | Not used | Who else can sign in to a self-hosted server: addresses and `@domain` entries, comma-separated |
-| `EMAIL_FROM` | Required | Optional | From address of sign-in codes and alerts. MailCheap Cloud uses `MailCheap <hello@r.mailcheap.ai>` without it, with replies to `hello@mailcheap.ai` |
-| `RESEND_API_KEY` | Optional | Required | Sign-in codes and alerts through Resend. Self-hosted without it, they go through the email provider; MailCheap Cloud never does that and refuses to start without it |
-| `MAILCHEAP_CLOUD` | Unset | `true` | Turns on open sign-up, plans and Stripe billing. Only exactly `true` counts. Set it for builds too: the public pages read it then |
-| `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` | Not used | Required | Billing, and the signing secret of `<APP_URL>/api/webhooks/stripe`. MailCheap Cloud refuses to start without them |
+| `EMAIL_FROM` | Required | Optional | From address of sign-in codes and alerts. MailCru Cloud uses `MailCru <hello@r.mailcru.com>` without it, with replies to `hello@mailcru.com` |
+| `RESEND_API_KEY` | Optional | Required | Sign-in codes and alerts through Resend. Self-hosted without it, they go through the email provider; MailCru Cloud never does that and refuses to start without it |
+| `MAILCRU_CLOUD` | Unset | `true` | Turns on open sign-up, plans and Stripe billing. Only exactly `true` counts. Set it for builds too: the public pages read it then |
+| `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` | Not used | Required | Billing, and the signing secret of `<APP_URL>/api/webhooks/stripe`. MailCru Cloud refuses to start without them |
 | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | Optional | Optional | Google sign-in. Redirect URI `<APP_URL>/api/auth/callback/google` |
 | `SENDING_ENABLED` | To send | To send | Nothing goes to readers unless it's `true`. Sign-in codes and alerts don't wait for it |
 | `EMAIL_PROVIDER` | Optional | Optional | `postshiba` or `ses`. Default: `postshiba` when `POSTSHIBA_API_KEY` is set, else `ses`. Any other value stops sending |
@@ -281,7 +283,7 @@ QStash calls `APP_URL/api/jobs/...` to send each batch, so the app has to be rea
 | `SES_AWS_ACCOUNT_ID` | For SES | For SES | ID of the AWS account, for identity ARNs |
 | `SES_SNS_TOPIC_ARN` | For SES | For SES | Events of every account's configuration set, at `/api/webhooks/ses` |
 | `SES_TENANT_SNS_TOPIC_ARN` | Optional | Used | Tenant pauses and reputation findings from EventBridge, at `/api/webhooks/ses-tenants` |
-| `SHARED_DOMAIN` | Optional | Used | Shared domain with its DNS on Vercel, `mailcheap.ai` on MailCheap Cloud: newsletters without a domain of their own send from `hello@<slug>.SHARED_DOMAIN` and have their archive at `<slug>.SHARED_DOMAIN` |
+| `SHARED_DOMAIN` | Optional | Used | Shared domain with its DNS on Vercel, `mailcru.com` on MailCru Cloud: newsletters without a domain of their own send from `hello@<slug>.SHARED_DOMAIN` and have their archive at `<slug>.SHARED_DOMAIN` |
 | `ARCHIVE_CNAME_TARGET` | Optional | Used | What archive subdomains point at with a CNAME (`cname.vercel-dns.com` on Vercel) |
 | `DNS_BROKER_URL`, `DNS_BROKER_SECRET` | With `SHARED_DOMAIN` | Used | The DNS helper that publishes the shared subdomains' records, and the secret that signs each request to it |
 | `QSTASH_TOKEN`, `QSTASH_CURRENT_SIGNING_KEY`, `QSTASH_NEXT_SIGNING_KEY`, `QSTASH_URL` | To send campaigns | To send campaigns | Batches, scheduling, and sends the provider asked to retry later |
@@ -303,7 +305,7 @@ Create a key on the **API keys** page and send it as `Authorization: Bearer <key
 
 ```bash
 curl -X POST https://<your-app>/api/v1/contacts \
-  -H "Authorization: Bearer $MAILCHEAP_API_KEY" \
+  -H "Authorization: Bearer $MAILCRU_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"email":"jane@example.com","source":"website","ip":"203.0.113.7"}'
 ```
@@ -311,28 +313,28 @@ curl -X POST https://<your-app>/api/v1/contacts \
 **MCP**: connect Claude Code with a full access key. Every action is a tool, and sending is marked as one that can't be undone, so your agent asks you first.
 
 ```bash
-claude mcp add --transport http --scope user mailcheap https://<your-app>/mcp \
-  --header "Authorization: Bearer $MAILCHEAP_API_KEY"
+claude mcp add --transport http --scope user mailcru https://<your-app>/mcp \
+  --header "Authorization: Bearer $MAILCRU_API_KEY"
 ```
 
-**ChatGPT, Claude and Grok Bot** add `https://<your-app>/mcp` as a connector or custom MCP server and sign in with OAuth: the user signs in to MailCheap, allows the app on a consent page, and the app gets full access to that account. Better Auth is the authorization server (issuer `APP_URL`, discovery at `/.well-known/oauth-authorization-server`), apps identify themselves with a client metadata document (Grok Bot, on Cursor's agents, registers instead, with redirect URIs from the allowlist in `lib/oauth-rules.js`), and access tokens are bound to `/mcp`. The **API keys** page lists connected apps and revokes them. The server has to be reachable over HTTPS from the internet for them.
+**ChatGPT, Claude and Grok Bot** add `https://<your-app>/mcp` as a connector or custom MCP server and sign in with OAuth: the user signs in to MailCru, allows the app on a consent page, and the app gets full access to that account. Better Auth is the authorization server (issuer `APP_URL`, discovery at `/.well-known/oauth-authorization-server`), apps identify themselves with a client metadata document (Grok Bot, on Cursor's agents, registers instead, with redirect URIs from the allowlist in `lib/oauth-rules.js`), and access tokens are bound to `/mcp`. The **API keys** page lists connected apps and revokes them. The server has to be reachable over HTTPS from the internet for them.
 
-`/docs` on your server has every endpoint, the errors, the MCP setup for ChatGPT, Claude, Grok Bot, Claude Code, Codex and Cursor, and the OpenAPI document at `/api/v1/openapi.json`. On MailCheap Cloud, the same at [mailcheap.ai/docs](https://mailcheap.ai/docs) and `https://mailcheap.ai/mcp`.
+`/docs` on your server has every endpoint, the errors, the MCP setup for ChatGPT, Claude, Grok Bot, Claude Code, Codex and Cursor, and the OpenAPI document at `/api/v1/openapi.json`. On MailCru Cloud, the same at [mailcru.com/docs](https://mailcru.com/docs) and `https://mailcru.com/mcp`.
 
 ## Local development
 
 You need Node.js 22+ and MongoDB.
 
 ```bash
-git clone https://github.com/marclou/mailcheap.git && cd mailcheap
+git clone https://github.com/akash-yadav-dev/mailcru.git && cd mailcru
 npm install
 cp .env.example .env.local   # set MONGODB_URI, BETTER_AUTH_SECRET, ADMIN_EMAILS
 npm run dev
 ```
 
-- Without `MAILCHEAP_CLOUD` it runs as a self-hosted server: sign in with an email in `ADMIN_EMAILS` or `ALLOWED_EMAILS`. Without `RESEND_API_KEY`, development prints the code in the server console (`[signin] Code for ...`); production never does.
-- A local MongoDB works: `docker run -d -p 27017:27017 mongo` and `MONGODB_URI=mongodb://127.0.0.1:27017/mailcheap`. A replica set (`mongod --replSet rs0`, then `rs.initiate()`) also gives Better Auth transactions, like Atlas.
-- To work on MailCheap Cloud's own parts, set `MAILCHEAP_CLOUD=true` with Stripe test keys and a Resend key: the cloud doesn't start without them. Run `stripe listen --forward-to localhost:3000/api/webhooks/stripe` and use its signing secret as `STRIPE_WEBHOOK_SECRET`.
+- Without `MAILCRU_CLOUD` it runs as a self-hosted server: sign in with an email in `ADMIN_EMAILS` or `ALLOWED_EMAILS`. Without `RESEND_API_KEY`, development prints the code in the server console (`[signin] Code for ...`); production never does.
+- A local MongoDB works: `docker run -d -p 27017:27017 mongo` and `MONGODB_URI=mongodb://127.0.0.1:27017/mailcru`. A replica set (`mongod --replSet rs0`, then `rs.initiate()`) also gives Better Auth transactions, like Atlas.
+- To work on MailCru Cloud's own parts, set `MAILCRU_CLOUD=true` with Stripe test keys and a Resend key: the cloud doesn't start without them. Run `stripe listen --forward-to localhost:3000/api/webhooks/stripe` and use its signing secret as `STRIPE_WEBHOOK_SECRET`.
 - Sending stays off unless `SENDING_ENABLED=true`. SES needs `SES_ACCESS_KEY_ID` and `SES_SECRET_ACCESS_KEY`: the app never falls back to `~/.aws` or other default AWS credentials. PostShiba needs its four ids and keys and `CREDENTIALS_ENCRYPTION_KEY`.
 - QStash can't reach `localhost`. To try a full send locally, run the QStash dev server (`npx @upstash/qstash-cli dev`) and use the URL, token and signing keys it prints.
 
@@ -344,16 +346,16 @@ npm run lint
 npm run build
 ```
 
-Integration tests (sign-in, isolation, billing, plan limits, admin, sending, domains, PostShiba, its webhook, the REST API, MCP, parity, the public site, self-hosting, MailCheap's own emails, the account page and deleting an account) start a throwaway `mongod` per file, so `mongod` has to be on the `PATH` (or set `MONGOD_PATH`). They import server actions and route handlers as they are: `tests/setup` resolves the `@/` alias and replaces Next.js request APIs, QStash, SES (`lib/ses.js`), DNS lookups, the DNS helper, Vercel Blob, S3 (`@aws-sdk/client-s3`), CloudFront (`@aws-sdk/client-cloudfront`) and image downloads with the stubs in `tests/stubs`. Stripe, Resend, Google's token endpoint and PostShiba are answered by a mocked `fetch` (`tests/helpers/postshiba.mjs` is an in-memory PostShiba); nothing reaches the network. Tests run as MailCheap Cloud on SES unless they say otherwise: `tests/self-host.test.mjs` runs as a self-hosted server, `tests/platform-email.test.mjs` as both.
+Integration tests (sign-in, isolation, billing, plan limits, admin, sending, domains, PostShiba, its webhook, the REST API, MCP, parity, the public site, self-hosting, MailCru's own emails, the account page and deleting an account) start a throwaway `mongod` per file, so `mongod` has to be on the `PATH` (or set `MONGOD_PATH`). They import server actions and route handlers as they are: `tests/setup` resolves the `@/` alias and replaces Next.js request APIs, QStash, SES (`lib/ses.js`), DNS lookups, the DNS helper, Vercel Blob, S3 (`@aws-sdk/client-s3`), CloudFront (`@aws-sdk/client-cloudfront`) and image downloads with the stubs in `tests/stubs`. Stripe, Resend, Google's token endpoint and PostShiba are answered by a mocked `fetch` (`tests/helpers/postshiba.mjs` is an in-memory PostShiba); nothing reaches the network. Tests run as MailCru Cloud on SES unless they say otherwise: `tests/self-host.test.mjs` runs as a self-hosted server, `tests/platform-email.test.mjs` as both.
 
 `tests/parity.test.mjs` walks the action registry and fails when an action has no REST route, no MCP tool (listed through the real `/mcp` route), no entry in the OpenAPI document, the docs or the llms files, or an input without a description, and when a dashboard server action does anything but run a registered action. The account page's profile and deletion are the exception: like sign-in, no API key or app may reach them. `tests/mcp.test.mjs` also connects the official MCP client on the 2026-07-28 revision and with the 2025 handshake. `tests/oauth.test.mjs` connects it with OAuth the way ChatGPT and Claude do (discovery, a client metadata document served from memory by `tests/stubs/cimd-node.mjs`, PKCE, sign-in and consent, refresh) and the way Grok Bot does (registration, with the allowlist and its rate limit), and checks scopes, revocation and accounts kept apart.
 
 ## How it works
 
 - Next.js App Router, JavaScript, Tailwind CSS with shadcn/ui, MongoDB through Mongoose, Better Auth for sign-in.
-- **Two modes, one switch.** `isCloud()` in `lib/config.js` is `MAILCHEAP_CLOUD === "true"`. Without it there's no billing (every account counts as paid, `getAccountLimits()` is `null`, the billing actions answer `billing_off`) and sign-in is limited to the allowlist. MailCheap Cloud's marketing site, which isn't part of the open source, plugs into the shared pages through `lib/site-extensions.js` and `components/SiteExtensions.jsx`; their defaults add nothing, so `/` is the dashboard, or sign-in without a session.
+- **Two modes, one switch.** `isCloud()` in `lib/config.js` is `MAILCRU_CLOUD === "true"`. Without it there's no billing (every account counts as paid, `getAccountLimits()` is `null`, the billing actions answer `billing_off`) and sign-in is limited to the allowlist. MailCru Cloud's marketing site, which isn't part of the open source, plugs into the shared pages through `lib/site-extensions.js` and `components/SiteExtensions.jsx`; their defaults add nothing, so `/` is the dashboard, or sign-in without a session.
 - **Scoping.** `scoped(account, filter)` in `lib/account-scope.js` adds the account to every query. A Mongoose plugin on every customer model rejects any query, aggregation or bulk write without an `accountId`, so a forgotten scope fails loudly instead of reading another account's data. The few lookups that have to find a document across accounts say so with `{ crossAccount: true }`: tracking links (by message id), unsubscribe, confirm and keep links (signed tokens), archives (public slugs), the API key lookup (the key decides the account) and the global uniqueness of archive slugs.
-- **Who's asking.** Pages and server actions call `requireAccount()`, the REST API and MCP call `authenticateRequest()` (API key to account and level), all in `lib/auth.js` and `lib/api-keys.js`. MCP also takes OAuth access tokens: `authenticateAccessToken()` in `lib/oauth.js` checks the token against Better Auth's signing keys, its audience (`/mcp`), its scope and the connected app it names, then works in the token's user's account. `proxy.js` only checks that a session cookie is there. On MailCheap Cloud the dashboard opens without a plan: an action marked `tryWithoutPlan` (setting up the newsletter, writing campaigns, adding 5 contacts a day by hand, reading) runs from the dashboard, and the others (sending, imports, domains, API keys) answer `subscription_required`, which opens the paywall. The REST API and MCP need a plan for everything but billing.
+- **Who's asking.** Pages and server actions call `requireAccount()`, the REST API and MCP call `authenticateRequest()` (API key to account and level), all in `lib/auth.js` and `lib/api-keys.js`. MCP also takes OAuth access tokens: `authenticateAccessToken()` in `lib/oauth.js` checks the token against Better Auth's signing keys, its audience (`/mcp`), its scope and the connected app it names, then works in the token's user's account. `proxy.js` only checks that a session cookie is there. On MailCru Cloud the dashboard opens without a plan: an action marked `tryWithoutPlan` (setting up the newsletter, writing campaigns, adding 5 contacts a day by hand, reading) runs from the dashboard, and the others (sending, imports, domains, API keys) answer `subscription_required`, which opens the paywall. The REST API and MCP need a plan for everything but billing.
 - **OAuth.** `lib/auth.js` adds Better Auth's JWT, MCP and client metadata document plugins. Sign-in (`/signin`) and the consent page (`/oauth/consent`) carry Better Auth's signed authorization request; Better Auth creates its RS256 signing key in the `jwks` collection on first use. A connected app is an `oauthConsent` document; disconnecting it deletes its tokens and the consent, and every access token names its consent, so it stops at once.
 - **Sign-in.** Codes are sent and checked by server actions with the app's rate limits; Better Auth's own code routes are closed. On a self-hosted server, Better Auth's user and session hooks refuse anyone off the allowlist, whatever the route, and `getSession()` ignores anyone taken off it since.
 - **Actions.** Every customer action is one `defineAction` in `lib/actions/<group>.js`: an HTTP route, zod input and output schemas, a permission (`full` or `signups`), MCP hints, an optional rate limit, per key and per account, and a handler. `dashboardInput` adds fields only the dashboard sends, like Add contact's consent box: the REST API and MCP don't take them. `runAction` (`lib/actions/run-action.js`) is the only way to run one, from the dashboard, the REST API (`app/api/v1/[...path]`) or MCP (`/mcp`, `lib/mcp/server.js`). `lib/docs` builds the OpenAPI document, `/docs/api` and `/llms-full.txt` from the same schemas.
@@ -361,13 +363,13 @@ Integration tests (sign-in, isolation, billing, plan limits, admin, sending, dom
 - **Email providers.** `lib/email-provider` is the one switch: each adapter (`ses.js`, `postshiba.js`) does tenants, domains and sends, and its errors carry a stable outcome that the batch turns into retry later, skip the address, pause the campaign or fail the email. Both providers' events become one shape (`lib/email-event-rules.js`) and are recorded only in the account they name.
 - **Images** (`lib/image-storage.js`): uploads from the editor, the newsletter settings and `upload_image` go to the S3 bucket when `IMAGES_S3_BUCKET` is set, under `accounts/<accountId>/images/` with a random part in the name, and are served from `IMAGES_CDN_URL`; otherwise to Vercel Blob. Nothing is moved, and nothing is deleted until its account is, since sent emails point at the URLs. Each upload is an `Upload` document, which the image picker and `list_images` list and the purge deletes files by; a file whose document can't be saved is deleted right away.
 - **Deleting an account** (`lib/account-deletion.js`, `lib/account-purge.js`) only happens on its page, with a code sent for it: never through the REST API or MCP. It's refused while Stripe bills a plan or a campaign sends or is scheduled. At once, every session ends, API keys and connected apps stop, the account counts as unpaid (no sends, signups or archive) and its tenant is suspended. A QStash job runs 30 days later, waking up every 6 days on the way, unless signing in restored the account: it deletes the user, everything with the account's id, its domains and shared subdomains at the provider and in DNS, its tenant and its images (invalidated on CloudFront too), and keeps a `DeletionRecord` (a keyed hash of the email and the dates). A step that fails is tried again the next day, with an alert.
-- **MailCheap's own emails** (`lib/platform-email.js`): Resend when `RESEND_API_KEY` is set; on a self-hosted server without it, the provider's `sendPlatformEmail`. MailCheap Cloud never sends them through the provider.
+- **MailCru's own emails** (`lib/platform-email.js`): Resend when `RESEND_API_KEY` is set; on a self-hosted server without it, the provider's `sendPlatformEmail`. MailCru Cloud never sends them through the provider.
 - **Opens and clicks** go through `/o/...` and `/c/...` on the newsletter's host. Clicks within 30 seconds of the send, or from known link scanners, don't count. While the account is blocked, `/c/...` answers an uncached page saying the link is disabled instead of redirecting, and its opens and clicks don't count.
 - **Archive pages** are static and refresh when you send or save.
 
-## Running MailCheap Cloud
+## Running MailCru Cloud
 
-`MAILCHEAP_CLOUD=true` is what [mailcheap.ai](https://mailcheap.ai) runs with: sign-up open to anyone, a newsletter setup at `/welcome` right after sign-in, a dashboard to try before paying with a paywall on sending, imports, domains and API keys, plan limits, and MailCheap's own emails through Resend only. Its landing, pricing and legal pages live in its own repository. It refuses to start without `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` and `RESEND_API_KEY`, and `/api/health` answers 503 with the reason, so the cloud can't run without billing by mistake.
+`MAILCRU_CLOUD=true` is what [mailcru.com](https://mailcru.com) runs with: sign-up open to anyone, a newsletter setup at `/welcome` right after sign-in, a dashboard to try before paying with a paywall on sending, imports, domains and API keys, plan limits, and MailCru's own emails through Resend only. Its landing, pricing and legal pages live in its own repository. It refuses to start without `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` and `RESEND_API_KEY`, and `/api/health` answers 503 with the reason, so the cloud can't run without billing by mistake.
 
 | Plan | Monthly | Yearly | Emails per month | Subscribers |
 | --- | --- | --- | --- | --- |
@@ -382,7 +384,7 @@ Admins can give an account a free plan from `/admin` (the account's menu, **Give
 
 ### Stripe setup
 
-1. **Prices by lookup key.** Create four products (Starter, Growth, Pro, Scale), each with a monthly and a yearly recurring USD price, and give every price its lookup key: `mailcheap_<plan>_monthly` and `mailcheap_<plan>_yearly`, like `mailcheap_growth_yearly`. Checkout finds prices by these keys and refuses one whose amount or interval doesn't match `lib/plans.js`, so no price ID goes in the environment.
+1. **Prices by lookup key.** Create four products (Starter, Growth, Pro, Scale), each with a monthly and a yearly recurring USD price, and give every price its lookup key: `mailcru_<plan>_monthly` and `mailcru_<plan>_yearly`, like `mailcru_growth_yearly`. Checkout finds prices by these keys and refuses one whose amount or interval doesn't match `lib/plans.js`, so no price ID goes in the environment.
 2. **Webhook.** Add an endpoint at `<APP_URL>/api/webhooks/stripe` with the events `checkout.session.completed`, `customer.subscription.created`, `customer.subscription.updated`, `customer.subscription.deleted` and `invoice.paid`. Use API version `2026-09-30.endive` (the one `stripe@23` pins) and put its signing secret in `STRIPE_WEBHOOK_SECRET`.
 3. **Customer Portal.** Turn on payment method updates, invoices, cancellation (at the end of the period) and plan changes between the eight prices. Charge upgrades at once, with prorations invoiced immediately, and schedule downgrades, a cheaper price or a shorter interval, for the end of the period: otherwise an account can upgrade, send a bigger plan's emails and downgrade before the difference is billed. The billing page's "Switch" buttons open the portal's confirm page for one plan; without plan changes on, they open the portal's home.
 
@@ -394,8 +396,8 @@ There's none: issues are off and pull requests may not be reviewed. See [SECURIT
 
 ## License
 
-[GNU Affero General Public License v3.0](LICENSE). Copyright (C) 2026 Marc Lou.
+[GNU Affero General Public License v3.0](LICENSE). Copyright (C) 2026 Marc Lou. Modifications Copyright (C) 2026 Akash Yadav.
 
-If you change MailCheap and run it for other people, the AGPL asks you to offer them the source of your version: point the "Source code" link (`SOURCE_URL` in `lib/site.js`) at it. The one-time release before this license, [67d13b0](https://github.com/marclou/mailcheap/tree/67d13b028a6ecae9ec56d49c4b2db58019217eba) in github.com/marclou/mailcheap's history, stays under MIT.
+MailCru is a modified version of [MailCheap](https://github.com/marclou/mailcheap): [NOTICE.md](NOTICE.md) lists the changes. If you change MailCru and run it for other people, the AGPL asks you to offer them the source of your version: point the "Source code" link (`SOURCE_URL` in `lib/site.js`) at it. The one-time release before this license, [67d13b0](https://github.com/marclou/mailcheap/tree/67d13b028a6ecae9ec56d49c4b2db58019217eba) in github.com/marclou/mailcheap's history, stays under MIT.
 
-Made by [Marc Lou](https://x.com/marclou).
+MailCheap was made by [Marc Lou](https://x.com/marclou). MailCru is maintained by [Akash Yadav](https://x.com/akashyadav_dev).

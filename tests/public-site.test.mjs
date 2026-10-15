@@ -7,9 +7,9 @@ import { activate, anonymous, as, catchRedirect, form, mockStripe, platformEmail
 
 // The public side of the app on every server: where / sends signed-out visitors, which paths open without a session,
 // the plan buttons' way through sign-in to Checkout, and what the sitemap and robots.txt tell search engines.
-// MailCheap Cloud's marketing site adds to it through the site extensions (tests/marketing/site.test.mjs).
+// MailCru Cloud's marketing site adds to it through the site extensions (tests/marketing/site.test.mjs).
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
-const SITE_URL = "https://mailcheap.ai";
+const SITE_URL = "https://mailcru.com";
 const CHECKOUT = "/billing/checkout?plan=growth&interval=year";
 // The companies that send the emails.
 const PROVIDERS = /Amazon|\bAWS\b|\bSES\b|PostShiba|Resend/;
@@ -163,7 +163,7 @@ describe("plan buttons", () => {
 		assert.equal(url, CHECKOUT);
 		assert.equal(await as(user, () => catchRedirect(checkout(url))), "https://checkout.stripe.com/c/pay/cs_test_site");
 		const created = calls.find(({ path }) => path === "/v1/checkout/sessions").body;
-		assert.equal(created.get("line_items[0][price]"), "price_mailcheap_growth_yearly");
+		assert.equal(created.get("line_items[0][price]"), "price_mailcru_growth_yearly");
 		assert.equal(created.get("customer_email"), "plan-button@example.com");
 	});
 

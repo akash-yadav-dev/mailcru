@@ -10,15 +10,15 @@ import {
 } from "../lib/account-state.js";
 import { PLANS, getAccountLimits, getAccountPlan, getLookupKey, getPrice, isOnFreePlan, parseLookupKey, readInterval } from "../lib/plans.js";
 
-// Plans and the paywall are MailCheap Cloud's; the last test is a self-hosted server.
-process.env.MAILCHEAP_CLOUD = "true";
+// Plans and the paywall are MailCru Cloud's; the last test is a self-hosted server.
+process.env.MAILCRU_CLOUD = "true";
 
 function selfHosted(run) {
-	process.env.MAILCHEAP_CLOUD = "";
+	process.env.MAILCRU_CLOUD = "";
 	try {
 		return run();
 	} finally {
-		process.env.MAILCHEAP_CLOUD = "true";
+		process.env.MAILCRU_CLOUD = "true";
 	}
 }
 
@@ -35,14 +35,14 @@ test("the four plans match the spec: prices, emails a month and subscribers", ()
 });
 
 test("Stripe lookup keys name the plan and the interval, both ways", () => {
-	assert.equal(getLookupKey("growth", "month"), "mailcheap_growth_monthly");
-	assert.equal(getLookupKey("scale", "year"), "mailcheap_scale_yearly");
+	assert.equal(getLookupKey("growth", "month"), "mailcru_growth_monthly");
+	assert.equal(getLookupKey("scale", "year"), "mailcru_scale_yearly");
 	for (const plan of PLANS) {
 		for (const interval of ["month", "year"]) {
 			assert.deepEqual(parseLookupKey(getLookupKey(plan.id, interval)), { plan: plan.id, interval });
 		}
 	}
-	for (const key of [null, "", "growth_monthly", "mailcheap_enterprise_monthly", "mailcheap_pro_weekly", "mailcheap_pro_monthly_v2"]) {
+	for (const key of [null, "", "growth_monthly", "mailcru_enterprise_monthly", "mailcru_pro_weekly", "mailcru_pro_monthly_v2"]) {
 		assert.equal(parseLookupKey(key), null, String(key));
 	}
 	assert.equal(readInterval("year"), "year");
@@ -109,7 +109,7 @@ test("every send needs a plan and an account that isn't blocked", () => {
 	assert.equal(getAccountSendProblem({ subscriptionStatus: "canceled" }).code, "subscription_required");
 	const blocked = getAccountSendProblem({ subscriptionStatus: "active", status: "paused", pauseReason: "An email reached a spam trap." });
 	assert.equal(blocked.code, "account_blocked");
-	assert.equal(blocked.message, "This account is blocked: An email reached a spam trap. Contact hello@mailcheap.ai to unblock it.");
+	assert.equal(blocked.message, "This account is blocked: An email reached a spam trap. Contact hello@mailcru.com to unblock it.");
 	assert.equal(getAccountSendProblem({ status: "paused" }).code, "account_blocked", "the block comes before the plan");
 	assert.equal(getAccountSendProblem({ subscriptionStatus: "active", status: "active" }), null);
 });
@@ -133,13 +133,13 @@ test("a send is blocked when it would pass the month's emails or the account is 
 	assert.equal(getPlanLimitProblem({ ...fits, emailsSent: 25_000 }).message.includes("has 0 left"), true, "never negative");
 });
 
-test("self-hosted, without MAILCHEAP_CLOUD: no paywall, no plan limits, every account active unless blocked", () => {
+test("self-hosted, without MAILCRU_CLOUD: no paywall, no plan limits, every account active unless blocked", () => {
 	for (const value of [undefined, "", "false", "1", "TRUE"]) {
-		if (value === undefined) delete process.env.MAILCHEAP_CLOUD;
-		else process.env.MAILCHEAP_CLOUD = value;
-		assert.equal(hasActiveSubscription({}), true, `MAILCHEAP_CLOUD=${value}`);
+		if (value === undefined) delete process.env.MAILCRU_CLOUD;
+		else process.env.MAILCRU_CLOUD = value;
+		assert.equal(hasActiveSubscription({}), true, `MAILCRU_CLOUD=${value}`);
 	}
-	process.env.MAILCHEAP_CLOUD = "true";
+	process.env.MAILCRU_CLOUD = "true";
 
 	selfHosted(() => {
 		for (const status of [undefined, "canceled", "unpaid"]) assert.equal(hasActiveSubscription({ subscriptionStatus: status }), true, String(status));
@@ -154,5 +154,5 @@ test("self-hosted, without MAILCHEAP_CLOUD: no paywall, no plan limits, every ac
 		const huge = { account: {}, emailsSent: 50_000_000, queued: 1_000_000, recipients: 2_000_000, activeContacts: 3_000_000 };
 		assert.equal(getPlanLimitProblem(huge), null);
 	});
-	assert.equal(getAccountSendProblem({}).code, ERROR_CODES.subscriptionRequired, "back on MailCheap Cloud");
+	assert.equal(getAccountSendProblem({}).code, ERROR_CODES.subscriptionRequired, "back on MailCru Cloud");
 });

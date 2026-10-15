@@ -118,8 +118,8 @@ describe("from addresses", () => {
 	test("newsletters default to the shared address on their own subdomain, set up with its DNS records; replies go to the owner", async () => {
 		const user = await customer("shared@example.com", "shared-news");
 		const newsletter = await m.Newsletter.findOne({ accountId: user.accountId }).lean();
-		assert.equal(newsletter.fromEmail, "hello@shared-news.mailcheapmail.com");
-		const subdomain = "shared-news.mailcheapmail.com";
+		assert.equal(newsletter.fromEmail, "hello@shared-news.mailcrumail.com");
+		const subdomain = "shared-news.mailcrumail.com";
 		assert.deepEqual(
 			calls.findLast((call) => call.name === "createDomainIdentity").args,
 			{ domain: subdomain, configurationSet: `mc-${user.accountId}`, mailFromDomain: `bounce.${subdomain}` }
@@ -134,7 +134,7 @@ describe("from addresses", () => {
 				["shared-news", "CNAME", `tok3._domainkey.${subdomain}`, "tok3.dkim.amazonses.com"],
 				["shared-news", "MX", `bounce.${subdomain}`, "10 feedback-smtp.us-east-1.amazonses.com"],
 				["shared-news", "TXT", `bounce.${subdomain}`, "v=spf1 include:amazonses.com ~all"],
-				["shared-news", "CNAME", subdomain, "cname.mailcheap.ai"],
+				["shared-news", "CNAME", subdomain, "cname.mailcru.com"],
 			]
 		);
 		assert.deepEqual([newsletter.sharedSender.domain, newsletter.sharedSender.provider], [subdomain, "ses"]);
@@ -142,46 +142,46 @@ describe("from addresses", () => {
 		const id = await draft(user);
 		assert.deepEqual(await as(user, () => m.campaigns.sendTestCampaign(id)), { ok: true });
 		const email = sent.at(-1);
-		assert.equal(email.from, "hello@shared-news.mailcheapmail.com");
+		assert.equal(email.from, "hello@shared-news.mailcrumail.com");
 		assert.equal(email.replyTo, "shared@example.com");
 		assert.equal(email.tenantName, `mc-${user.accountId}`);
 		assert.equal(email.configurationSet, `mc-${user.accountId}`);
-		assert.match(email.html, /https:\/\/shared-news\.mailcheapmail\.com\/c\//, "tracked links on the shared subdomain");
-		assert.match(email.headers["List-Unsubscribe"], /^<https:\/\/shared-news\.mailcheapmail\.com\/api\/unsubscribe\?token=/);
+		assert.match(email.html, /https:\/\/shared-news\.mailcrumail\.com\/c\//, "tracked links on the shared subdomain");
+		assert.match(email.headers["List-Unsubscribe"], /^<https:\/\/shared-news\.mailcrumail\.com\/api\/unsubscribe\?token=/);
 		assert.equal((await m.Newsletter.findOne({ accountId: user.accountId }).lean()).sharedSender.verified, true, "SES found the records");
 	});
 
 	test("the shared address follows the slug, its old subdomain goes, and it can't be another newsletter's", async () => {
 		const user = await customer("slug-follow@example.com", "first-slug");
 		const first = (await m.Newsletter.findOne({ accountId: user.accountId }).lean()).sharedSender;
-		assert.equal((await saveFrom(user, "second-slug", "hello@first-slug.mailcheapmail.com")).ok, true);
+		assert.equal((await saveFrom(user, "second-slug", "hello@first-slug.mailcrumail.com")).ok, true);
 		const newsletter = await m.Newsletter.findOne({ accountId: user.accountId }).lean();
-		assert.equal(newsletter.fromEmail, "hello@second-slug.mailcheapmail.com");
-		assert.equal(newsletter.sharedSender.domain, "second-slug.mailcheapmail.com");
-		assert.equal(state.identities.has("first-slug.mailcheapmail.com"), false, "the old subdomain is free for anyone");
-		assert.equal(state.associations.get(`mc-${user.accountId}`).has("identity/first-slug.mailcheapmail.com"), false);
+		assert.equal(newsletter.fromEmail, "hello@second-slug.mailcrumail.com");
+		assert.equal(newsletter.sharedSender.domain, "second-slug.mailcrumail.com");
+		assert.equal(state.identities.has("first-slug.mailcrumail.com"), false, "the old subdomain is free for anyone");
+		assert.equal(state.associations.get(`mc-${user.accountId}`).has("identity/first-slug.mailcrumail.com"), false);
 		assert.ok(first.dnsRecordIds.every((recordId) => !dnsRecords.has(recordId)), "and so are its DNS records");
-		assert.ok(state.identities.has("second-slug.mailcheapmail.com"));
+		assert.ok(state.identities.has("second-slug.mailcrumail.com"));
 
 		const other = await customer("slug-taker@example.com", "first-slug");
-		assert.equal((await m.Newsletter.findOne({ accountId: other.accountId }).lean()).sharedSender.domain, "first-slug.mailcheapmail.com");
-		assert.ok(state.associations.get(`mc-${other.accountId}`).has("identity/first-slug.mailcheapmail.com"), "in the new owner's tenant");
-		assert.equal((await saveFrom(user, "second-slug", "hello@first-slug.mailcheapmail.com")).ok, true);
-		assert.equal((await m.Newsletter.findOne({ accountId: user.accountId }).lean()).fromEmail, "hello@second-slug.mailcheapmail.com", "rewritten to its own");
+		assert.equal((await m.Newsletter.findOne({ accountId: other.accountId }).lean()).sharedSender.domain, "first-slug.mailcrumail.com");
+		assert.ok(state.associations.get(`mc-${other.accountId}`).has("identity/first-slug.mailcrumail.com"), "in the new owner's tenant");
+		assert.equal((await saveFrom(user, "second-slug", "hello@first-slug.mailcrumail.com")).ok, true);
+		assert.equal((await m.Newsletter.findOne({ accountId: user.accountId }).lean()).fromEmail, "hello@second-slug.mailcrumail.com", "rewritten to its own");
 	});
 
 	test("before the provider's keys are in, the shared address waits without an alert; once they are, a failure alerts the admins", async () => {
-		const alerts = () => platformEmails.filter(({ subject }) => subject === "[MailCheap] Shared address not set up").length;
+		const alerts = () => platformEmails.filter(({ subject }) => subject === "[MailCru] Shared address not set up").length;
 		const before = { alerts: alerts(), calls: calls.length };
 		const user = await withEnv({ SES_ACCESS_KEY_ID: "", SES_SECRET_ACCESS_KEY: "" }, () => customer("no-provider@example.com", "no-provider"));
 		const waiting = await m.Newsletter.findOne({ accountId: user.accountId }).lean();
-		assert.equal(waiting.fromEmail, "hello@no-provider.mailcheapmail.com", "saved with its shared address");
+		assert.equal(waiting.fromEmail, "hello@no-provider.mailcrumail.com", "saved with its shared address");
 		assert.equal(waiting.sharedSender, undefined);
 		assert.equal(calls.slice(before.calls).some(({ name }) => name === "createDomainIdentity"), false, "nothing tried at SES");
 		assert.equal(alerts(), before.alerts, "no alert");
 
-		assert.equal((await saveFrom(user, "no-provider", "hello@no-provider.mailcheapmail.com")).ok, true);
-		assert.equal((await m.Newsletter.findOne({ accountId: user.accountId }).lean()).sharedSender.domain, "no-provider.mailcheapmail.com", "set up once the keys are in");
+		assert.equal((await saveFrom(user, "no-provider", "hello@no-provider.mailcrumail.com")).ok, true);
+		assert.equal((await m.Newsletter.findOne({ accountId: user.accountId }).lean()).sharedSender.domain, "no-provider.mailcrumail.com", "set up once the keys are in");
 
 		state.failNext = { name: "createDomainIdentity", error: new Error("SES didn't answer") };
 		const error = console.error;
@@ -236,7 +236,7 @@ describe("own domains", () => {
 		assert.match((await as(user, () => m.campaigns.sendTestCampaign(id))).error, /owner-mail.com isn't verified yet/);
 
 		state.identities.get("owner-mail.com").verified = true;
-		cnames.set("news.owner-mail.com", ["cname.mailcheap.ai"]);
+		cnames.set("news.owner-mail.com", ["cname.mailcru.com"]);
 		assert.deepEqual(await as(user, () => m.domains.checkDomainAction(String(domain._id))), { ok: true, verified: true, archiveHostVerified: true });
 		assert.equal((await m.Newsletter.findOne({ accountId: user.accountId }).lean()).archiveHost, "news.owner-mail.com");
 
@@ -277,7 +277,7 @@ describe("own domains", () => {
 		await as(user, () => m.domains.addDomainAction(null, form({ domain: "pending-mail.com" })));
 		const pending = await m.Domain.findOne({ accountId: user.accountId, domain: "pending-mail.com" }).lean();
 		assert.deepEqual(await switchTo(user, pending, "hi"), { error: "pending-mail.com isn't verified yet" });
-		assert.equal((await m.Newsletter.findOne({ accountId: user.accountId }).lean()).fromEmail, "hello@switch-pending.mailcheapmail.com");
+		assert.equal((await m.Newsletter.findOne({ accountId: user.accountId }).lean()).fromEmail, "hello@switch-pending.mailcrumail.com");
 
 		const other = await customer("switch-other@example.com", "switch-other");
 		const theirs = await addVerifiedDomain(other, "their-mail.com");
@@ -289,7 +289,7 @@ describe("own domains", () => {
 		const second = await customer("second-owner@example.com", "second-owner");
 		await addVerifiedDomain(first, "taken.com");
 		const result = await as(second, () => m.domains.addDomainAction(null, form({ domain: "taken.com" })));
-		assert.deepEqual(result, { error: "taken.com is used by another MailCheap account" });
+		assert.deepEqual(result, { error: "taken.com is used by another MailCru account" });
 		assert.match((await saveFrom(second, "second-owner", "hi@taken.com")).error, /Add taken.com on the Domains page first/);
 		assert.equal(await m.Domain.countDocuments({ accountId: second.accountId }), 0);
 		assert.deepEqual(await as(first, () => m.domains.addDomainAction(null, form({ domain: "taken.com" }))), { error: "taken.com is already added" });
@@ -327,14 +327,14 @@ describe("hosts", () => {
 		await addVerifiedDomain(user, "hosts.dev", { archiveHost: "letters.hosts.dev" });
 		await saveFrom(user, "hosts-news", "hi@hosts.dev");
 		const resolve = m.hostRouting.resolveArchiveHost;
-		assert.deepEqual(await resolve("hosts-news.mailcheapmail.com"), { isArchiveHost: true, slug: "hosts-news" });
+		assert.deepEqual(await resolve("hosts-news.mailcrumail.com"), { isArchiveHost: true, slug: "hosts-news" });
 		assert.deepEqual(await resolve("Letters.Hosts.dev:443"), { isArchiveHost: true, slug: "hosts-news" });
 		assert.deepEqual(await resolve("unknown.example.net"), { isArchiveHost: true, slug: null });
 		assert.deepEqual(await resolve("localhost:3000"), { isArchiveHost: false, slug: null });
-		assert.deepEqual(await resolve("mailcheap-git-main.vercel.app"), { isArchiveHost: false, slug: null });
+		assert.deepEqual(await resolve("mailcru-git-main.vercel.app"), { isArchiveHost: false, slug: null });
 
 		// Unsubscribe and tracking keep working after the plan ends.
 		await m.Account.updateOne({ _id: user.accountId }, { $set: { subscriptionStatus: "canceled" } });
-		assert.deepEqual(await resolve("hosts-news.mailcheapmail.com"), { isArchiveHost: true, slug: "hosts-news" });
+		assert.deepEqual(await resolve("hosts-news.mailcrumail.com"), { isArchiveHost: true, slug: "hosts-news" });
 	});
 });

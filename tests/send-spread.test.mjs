@@ -6,15 +6,15 @@ import { published } from "./stubs/qstash.mjs";
 
 const HOUR_MS = 3_600_000;
 const SPREAD_MS = SEND_SPREAD.hours * HOUR_MS;
-const CLOUD = { MAILCHEAP_CLOUD: "true" };
+const CLOUD = { MAILCRU_CLOUD: "true" };
 
-test("spread sends: MailCheap Cloud only, from the first campaign until 30 days later or an admin ends them", () => {
+test("spread sends: MailCru Cloud only, from the first campaign until 30 days later or an admin ends them", () => {
 	const now = new Date("2026-10-13T12:00:00Z");
 	assert.equal(getSpreadMs({}, now, CLOUD), SPREAD_MS, "a new account, before its first campaign");
 	assert.equal(getSpreadMs({ spreadUntil: new Date("2026-11-01T00:00:00Z") }, now, CLOUD), SPREAD_MS);
 	assert.equal(getSpreadMs({ spreadUntil: "2026-11-01T00:00:00.000Z" }, now, CLOUD), SPREAD_MS, "serialized dates too");
 	assert.equal(getSpreadMs({ spreadUntil: now }, now, CLOUD), 0, "over");
-	assert.equal(getSpreadMs({}, now, { MAILCHEAP_CLOUD: "" }), 0, "self-hosted servers send at full speed");
+	assert.equal(getSpreadMs({}, now, { MAILCRU_CLOUD: "" }), 0, "self-hosted servers send at full speed");
 	assert.equal(getSpreadEnd(now).toISOString(), "2026-11-12T12:00:00.000Z");
 });
 
@@ -38,7 +38,7 @@ test("the warm-up shows the day and progress of the first 30 days, its next camp
 	assert.ok(Math.abs(started.progress - 2.5 / 30) < 1e-9);
 	assert.equal(getWarmup({ spreadUntil: getSpreadEnd(now) }, { now, env: CLOUD }).day, 1, "the first campaign was just now");
 	assert.equal(getWarmup({ spreadUntil: now }, { now, env: CLOUD }), null, "over, or ended by an admin");
-	assert.equal(getWarmup({}, { now, env: { MAILCHEAP_CLOUD: "" } }), null, "no warm-up on a self-hosted server");
+	assert.equal(getWarmup({}, { now, env: { MAILCRU_CLOUD: "" } }), null, "no warm-up on a self-hosted server");
 });
 
 test("batches start evenly over the spread, the first right away", () => {

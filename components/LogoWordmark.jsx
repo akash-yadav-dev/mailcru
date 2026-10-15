@@ -1,5 +1,5 @@
 import Link from "next/link";
-import LogoMailcheap from "@/components/LogoMailcheap";
+import LogoMailcru from "@/components/LogoMailcru";
 import { cn } from "@/lib/utils";
 
 export default function LogoWordmark({ href, className, children }) {
@@ -7,8 +7,8 @@ export default function LogoWordmark({ href, className, children }) {
 
 	return (
 		<Wordmark href={href} className={cn("flex items-center gap-2", className)}>
-			<LogoMailcheap />
-			<span className="text-[17px] font-semibold tracking-tight">MailCheap</span>
+			<LogoMailcru />
+			<span className="text-[17px] font-semibold tracking-tight">MailCru</span>
 			{children}
 		</Wordmark>
 	);

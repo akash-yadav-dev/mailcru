@@ -24,7 +24,7 @@ const STUBS = {
 	"@/lib/remote-image": stub("remote-image.mjs"),
 };
 
-// MailCheap Cloud's marketing site extends the shared pages through this module where its file exists, as in
+// MailCru Cloud's marketing site extends the shared pages through this module where its file exists, as in
 // next.config.mjs. The open source has none, so the default stays.
 const SITE_EXTENSIONS = { "@/lib/site-extensions": "lib/marketing/site-extensions.js" };
 
